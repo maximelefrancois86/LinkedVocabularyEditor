@@ -1,0 +1,10 @@
+<span>
+{{type}}
+<input ng-model="object['@value']"/>
+
+<a ng-if="type==='plainLiteral'" ng-click="addLanguageTag()">[specify language]</a>
+<span ng-if="type==='langString'">with language <select ng-model="object['@language']" ng-options="lang as getLabel(lang, value.nativeName) for (lang, value) in languages"/></span>
+
+<a ng-if="type==='plainLiteral'" ng-click="addDatatype()">[specify datatype]</a>
+<span ng-if="type==='typedLiteral'">with type <select ng-model="dtype.value" ng-options="dtype.value as getLabel(dtype.value, dtype.desc) for dtype in datatypes"/></span>
+</span>

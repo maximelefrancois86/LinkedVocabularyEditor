@@ -1,0 +1,6 @@
+<fieldset>
+<legend>{{label}} - <code>{{expand(pname)}}</code></legend>
+<p>{{comment}}</p>
+<vre-lang-string ng-if="isLiteral(object)" ng-repeat='object in objects'></vre-lang-string>
+<button type="button" ng-click="addLiteral()">Add Label</button>
+</fieldset>

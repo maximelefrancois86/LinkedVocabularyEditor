@@ -1,0 +1,12 @@
+<fieldset ng-if="p!=='@type'">
+<!--	<legend>Property {{shorten(p)}}</legend> -->
+	<legend>Property {{p}}</legend>
+	<div>{{info[p].comment}}</div>
+	<ve-object ng-repeat="object in objects"></ve-object>
+	<div><a ng-click="addResource()">[add Resource]</a> <a ng-click="addLiteral()">[add Literal]</a></div>
+</fieldset>
+<fieldset ng-if="p==='@type'">
+	<legend>property rdf:type</legend>
+	<div ng-repeat="object in objects track by $index" ng-controller="VEType"><input ng-model="pname"/><a ng-click="deleteObject()">[delete object]</a></div>
+	<div><a ng-click="addType()">[add Type]</a></div>
+</fieldset>

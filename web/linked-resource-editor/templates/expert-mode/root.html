@@ -1,0 +1,6 @@
+<div>
+<ul>
+	<li ng-repeat="graph in doc"><a href="#graph{{$index}}">Graph {{graph['@id']}}</a></li>
+</ul>
+<ve-graph ng-repeat="graph in doc" id="graph{{$index}}"></ve-graph> 
+</div>

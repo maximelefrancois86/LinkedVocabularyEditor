@@ -1,0 +1,38 @@
+{
+    "name": "LinkedVocabularyEditor",
+    "version": "0.1-alpha",
+    "description": "LinkedVocabularyEditor is a Media Wiki extension that enables to load, browse, collaboratively edit, and publish linked vocabularies.",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Maxime Lefrançois",
+            "email": "maxime.lefrancois.86@gmail.com",
+            "homepage": "http://maxime-lefrancois.info",
+            "role": "Developer"
+        }
+    ],
+    "keywords": ["mediawiki", "angular", "semantic web", "linked vocabulary", "linked data", "jsonld"],
+    "support": {
+        "issues": "https://github.com/maximelefrancois86/LinkedVocabularyEditor/issues"
+    },
+     "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/maximelefrancois86/easyrdf"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "easyrdf/easyrdf": "dev-master",
+        "ml/json-ld": "1.*",
+        "semsol/arc2": "*"
+     },
+    "scripts": {
+        "post-install-cmd": [
+            "bower install"
+        ],
+        "post-update-cmd": [
+            "bower install"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+{
+    "@metadata": {
+        "authors": "Max"
+    },
+    "lve": "Linked Vocabulary Editor",
+    "lve-desc": "Enable to load, browse, collaboratively edit, and publish Linked Vocabularies",
+    "lve-summary": "Prepare database for Linked Vocabulary Editor.",
+    "specialpages-group-lve": "Linked Vocabulary Editor Special Pages",
+    "adminpage": "Adapt database to Linked Vocabulary Editor",
+    "editnamespaces": "View and Edit Namespaces",
+    "importvocabularies": "Import/Export a Linked Vocabulary",
+    "getresource": "Get a wikipage corresponding to a resource",
+    "lve-setup-set": "Database is set up",
+    "lve-setup-notset": "Database is '''not''' set up",
+    "lve-setup-fresh": "Database is set up and ready to host Linked Vocabularies",
+    "lve-setup-failed": "Database setup failed. See errors below.",
+    "lve-setup-button": "Setup or Reset Database"
+}

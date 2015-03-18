@@ -1,0 +1,4 @@
+<div><span ng-if="!edit">{{shorten(object["@id"])}} - {{getComment(object["@id"])}}</span>
+<span ng-if="edit">filter:<input ng-model="searchText"/><select ng-model="object['@id']" ng-options="o.uri as getDescription(o) for o in resources_info | filter:searchText"/> {{getComment(object['@id'])}}</span>
+<a ng-click="toggleEdit()">[edit]</a> <a ng-click="delete()">[delete]</a></div>
+

@@ -1,0 +1,5 @@
+<h3>Triples about {{triples['@id']}}</h3>
+<ve-objects ng-repeat="(p, objects) in triples" ng-if="p!='$$hashKey' &amp;&amp; p!='@id'"></ve-objects>
+<fieldset>
+	<legend><input ng-model="newp"/><button type="button" ng-click="addProperty()">add new property</button></fieldset></legend>
+</fieldset>
