@@ -133,11 +133,12 @@ vreModule.directive('vreCheckbox', function() {
 vreModule.directive('vreObjectResources', function() {
 	return {
 		scope: true,
-		controller: ["$scope","$attrs", function($scope, $attrs){
+		controller: ["$scope","$attrs", "ngDialog", function($scope, $attrs, ngDialog){
 			$scope.ppname = $attrs.ppname;
  	 		$scope.resources_info = resources_info;
 			$scope.addObjectResource = function() {
-				console.log("addObjectResource");
+				ngDialog.open({ template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/dialog.html' });
+				$scope.s[expand($scope.ppname)].push({"@id":""});
 			};
 		}],
 		restrict: 'E',
@@ -153,7 +154,7 @@ vreModule.directive('vreObjectResource', function() {
 				$scope.edit = !$scope.edit;
 			};
 			$scope.delete = function() {
-				$scope.s[expand(ppname)].splice($index,1);
+				$scope.s[expand($scope.ppname)].splice($scope.s[expand($scope.ppname)].indexOf($scope.object),1);
 			};
 			$scope.getDescription = function(o){
 				return o.pname;

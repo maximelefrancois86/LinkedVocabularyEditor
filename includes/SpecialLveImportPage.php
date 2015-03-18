@@ -38,10 +38,11 @@ class ImportPage extends SpecialPage {
 		$action = $request->getText('action');
 		if ($action == "uri" || $action == 'data') {
 			$this->checkRights();
-			$easyGraph = new \EasyRdf\Graph($request->getText('import-uri'));
 			if ($action == "uri") {
-				$easyGraph->load($request->getText('import-uri'), 'guess');
+				$easyGraph = new \EasyRdf\Graph($request->getText('uri'));
+				$easyGraph->load($request->getText('uri'), 'guess');
 			} else {
+				$easyGraph = new \EasyRdf\Graph($request->getText('import-uri'));
 				$easyGraph->parse($request->getText('import-data'), 'guess', $request->getText('import-uri'));
 			}
 			if ($easyGraph != null) {
@@ -201,7 +202,7 @@ class ImportPage extends SpecialPage {
 		// import form
 		$output->addWikitext("== Import Linked Vocabulary ==");
 		$output->addHtml('<fieldset><legend>From URI</legend>'
-			. '<input type="url" size=80 pattern="https?://.+" name="import-uri"/>'
+			. '<input type="url" size=80 pattern="https?://.+" name="uri"/>'
 			. '<button type="submit" name="action" value="uri">Import</button>'
 			. '</fieldset>');
 		$output->addHtml('<fieldset><legend>From text</legend>'

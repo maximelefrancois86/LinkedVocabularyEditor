@@ -33,6 +33,10 @@ class EditResource extends \EditPage {
 			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/angular-ui-select/dist/select.js"));
 			$wgOut->addScript(Html::linkedStyle("extensions/LinkedVocabularyEditor/web/vendor/angular-ui-select/dist/select.css"));
 
+			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/ngDialog/js/ngDialog.js"));
+			$wgOut->addScript(Html::linkedStyle("extensions/LinkedVocabularyEditor/web/vendor/ngDialog/css/ngDialog.css"));
+			$wgOut->addScript(Html::linkedStyle("extensions/LinkedVocabularyEditor/web/vendor/ngDialog/css/ngDialog-theme-default.css"));
+
 			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/es6-promise/promise.js"));
 			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/jsonld/js/jsonld.js"));
 
@@ -75,6 +79,16 @@ class EditResource extends \EditPage {
 			// bind JSON-LD document to a javascript variable
 			$wgOut->addinlineScript('
 				// manually bootstrap module to element vEditor
+				$.getJSON("extensions/LinkedVocabularyEditor/resources/languages.json", function(data) {
+					languages = data;
+				});
+				$.getJSON("extensions/LinkedVocabularyEditor/resources/datatypes.json", function(data) {
+					datatypes = data;
+				});
+				$.getJSON("extensions/LinkedVocabularyEditor/api/resources_info.php", function(data) {
+					resources_info = data;
+				});
+
 				$(document).ready(function() {
 					// $("#wpTextbox1").hide();
 					$("#toolbar").hide();

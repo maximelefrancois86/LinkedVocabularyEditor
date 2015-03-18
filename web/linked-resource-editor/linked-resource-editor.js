@@ -1,16 +1,4 @@
-
-$.getJSON("extensions/LinkedVocabularyEditor/resources/languages.json", function(data) {
-	languages = data;
-});
-$.getJSON("extensions/LinkedVocabularyEditor/resources/datatypes.json", function(data) {
-	datatypes = data;
-});
-$.getJSON("extensions/LinkedVocabularyEditor/api/resources_info.php", function(data) {
-	resources_info = data;
-	console.log("got resources_info");
-});
-
-vreModule = angular.module('veApp', ['ui.select']);
+vreModule = angular.module('veApp', ['ui.select', 'ngDialog']);
 
 vreModule.controller('VEController', ['$scope', function($scope) {
 	$scope.edit = {mode: "simple"}; // the edit mode
@@ -107,7 +95,6 @@ expand = function(pname) {
 };
 
 getComment = function(uri) {
-	console.log("get_comment", resources_info);
 	for(var i in resources_info) {
 		if(resources_info[i].uri===uri) {
 			return resources_info[i].comment;
