@@ -1,10 +1,4 @@
-vreModule = angular.module('veApp', ['ngSanitize', 'ngDialog', 'ui.select']);
-
-
-vreModule.config(function(uiSelectConfig) {
-  uiSelectConfig.theme = 'select2';
-});
-
+vreModule = angular.module('veApp', ['ui.select', 'ngDialog']);
 
 vreModule.controller('VEController', ['$scope', function($scope) {
 	$scope.edit = {mode: "simple"}; // the edit mode
@@ -65,7 +59,7 @@ vreModule.directive('vreRoot', function() {
 
 	
 shorten = function(uri) {
-	if(typeof uri == 'undefined' || uri===null || uri === '') {
+	if(uri===null || uri === '') {
 		return '';
 	}
 	if(uri=="@type") {

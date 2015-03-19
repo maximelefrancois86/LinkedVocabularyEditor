@@ -137,11 +137,9 @@ vreModule.directive('vreObjectResources', function() {
 			$scope.ppname = $attrs.ppname;
  	 		$scope.resources_info = resources_info;
 			$scope.addObjectResource = function() {
-				selectResourceFn(ngDialog, function(value){
-					$scope.s[expand($scope.ppname)].push({"@id":value.s.value});
-				});
+				ngDialog.open({ template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/dialog.html' });
+				$scope.s[expand($scope.ppname)].push({"@id":""});
 			};
-
 		}],
 		restrict: 'E',
     	templateUrl: "extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/objectResources.html",
@@ -150,21 +148,14 @@ vreModule.directive('vreObjectResources', function() {
 
 vreModule.directive('vreObjectResource', function() {
 	return {
-		controller: ["$scope", "ngDialog", function($scope, ngDialog){
- 	 		$scope.delete = function() {
-				/*jshint multistr: true */
-	 	 		ngDialog.openConfirm({
-		            template:'\
-		                <p>Are you sure you want to delete this object resource?</p>\
-		                <div class="ngdialog-buttons">\
-		                    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(0)">No</button>\
-		                    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="confirm()">Yes</button>\
-		                </div>',
-		            plain: true,
-	     		}).then(function(data) {
-					$scope.s[expand($scope.ppname)].splice($scope.s[expand($scope.ppname)].indexOf($scope.object),1);
-	     		});
- 	 		};
+		controller: ["$scope", function($scope){
+			$scope.edit = false;
+			$scope.toggleEdit = function() {
+				$scope.edit = !$scope.edit;
+			};
+			$scope.delete = function() {
+				$scope.s[expand($scope.ppname)].splice($scope.s[expand($scope.ppname)].indexOf($scope.object),1);
+			};
 			$scope.getDescription = function(o){
 				return o.pname;
 			};
@@ -176,57 +167,4 @@ vreModule.directive('vreObjectResource', function() {
 
 
 
-selectResourceFn = function(ngDialog, callback) {
-	ngDialog.open({ 
-		appendTo: '#editform',
-		controller: ["$scope", function($scope) {
-			$scope.shorten = shorten;
-			var endpoint = "extensions/LinkedVocabularyEditor/api/sparql.php";
-			var query = [
-				"Prefix dc: <http://purl.org/dc/elements/1.1/> .",
-				"SELECT ?s ?title WHERE {",
-				"?s a owl:Ontology .",
-				"OPTIONAL {?s dc:title ?title}",
-				"}"
-			].join(" ");						
-			var queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
-			$.getJSON(queryUrl, function(data) {
-				$scope.ontologies = data;
-				$scope.$apply();
-			});
-
-			query = [
-				"Prefix dc: <http://purl.org/dc/elements/1.1/> .",
-				"SELECT ?s ?label ?comment WHERE {",
-				"?s a ?o",
-				"OPTIONAL {?s rdfs:label ?label}",
-				"OPTIONAL {?s rdfs:comment ?comment}",
-				"}"
-			].join(" ");						
-			queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
-
-			$.getJSON(queryUrl, function(data) {
-				$scope.resources = data;
-				$scope.$apply();
-			});
-
-			$scope.getOntologyLabel = function(o) {
-				return shorten(o.s.value) + (typeof o.title != 'undefined' ? " "+o.title.value : "");
-			};
-			$scope.getResourceLabel = function(o) {
-				return shorten(o.s.value) + (typeof o.label != 'undefined' ? " "+o.label.value : "");
-			};
-
-		}],
-		// showClose: false,
-		closeByEscape: false,
-		// closeByDocument: false,
-		cache: false,
-		template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/dialog.html',
-	}).closePromise.then(function(value) {
-		if(typeof value.value.s != 'undefined') {
-			callback(value.value);
-		}
-	});
-};
