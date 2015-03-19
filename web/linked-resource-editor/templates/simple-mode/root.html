@@ -1,10 +1,10 @@
 URI of the resource is {{uri}}.<br/>
 This resource is defined in the ontology {{guri}}.<br/>
-<!-- 
+
 <vre-lang-string-fieldset s="s" expand="expand" pname="rdfs:label" label="Label" comment="A human-readable name for the subject."></vre-lang-string-fieldset>
 
 <vre-lang-string-fieldset s="s" expand="expand" pname="rdfs:comment" label="comment" comment="A description of the subject resource."></vre-lang-string-fieldset>
- -->
+
 <fieldset>
 <legend>Type - <code>{{expand("rdf:type")}}</code></legend>
 <p>The type of this resource. A best practice is to check exactly one of these boxes.</p>
@@ -19,18 +19,30 @@ This resource is defined in the ontology {{guri}}.<br/>
 <vre-checkbox ppname="rdf:type" opname="owl:Class"></vre-checkbox> This resource is a class.<br/>
 <vre-checkbox ppname="rdf:type" opname="owl:ObjectProperty"></vre-checkbox> This resource is a property that links a resource to other resources.<br/>
 <div  ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')" class="animate-if">
-	<!-- subproperties -->
-	<!-- equivalent object properties -->
-	<!-- disjoint object properties -->
-	<!-- inverse object properties -->
-	<!-- domain -->
-	<!-- range -->
  	<fieldset>
 	<legend>Domain</legend>
+		<p>The subProperties: <em>explanation</em></p>
+		<vre-object-resources ppname="rdfs:subPropertyOf"></vre-object-resources>
+	</fieldset>
+ 	<fieldset>
+	<legend>Domain</legend>
+		<p>The equivalent properties: <em>explanation</em></p>
+		<vre-object-resources ppname="owl:equivalentProperty"></vre-object-resources>
+	</fieldset>
+	<!-- disjoint object properties -->
+	<!-- inverse object properties -->
+ 	<fieldset>
+	<legend>Domain</legend>
+		<p>The domains: <em>if a link {{about}} originates from x, then x belongs to each of these classes</em></p>
 		<vre-object-resources ppname="rdfs:domain"></vre-object-resources>
 	</fieldset>
+ 	<fieldset>
+	<legend>Range</legend>
+		<p>The ranges: <em>if a link {{about}} arrives to x, then x belongs to each of these classes</em></p>
+		<vre-object-resources ppname="rdfs:range"></vre-object-resources>
+	</fieldset>
 
-	<!-- <fieldset>
+	<fieldset>
 	<legend>Mathematical properties</legend>
 	<vre-checkbox ppname="rdf:type" opname="owl:FunctionalProperty"></vre-checkbox> This property is functional: 
 	<em>if &lt;x {{about}} y<sub>1</sub>&gt; and &lt;x {{about}} y<sub>2</sub>&gt;, then y<sub>1</sub>=y<sub>2</sub></em> - example: ex:hasFather<br/>
@@ -46,14 +58,14 @@ This resource is defined in the ontology {{guri}}.<br/>
 	This property is asymmetric: <em>if &lt;x {{about}} x&gt;, then the ontology is inconsistent (this is an error)</em> - example: ex:parentOf<br/>
 	<vre-checkbox ppname="rdf:type" opname="owl:TransitiveProperty"></vre-checkbox>
 	This property is transitive: <em>if &lt;x {{about}} y&gt; and , &lt;y {{about}} z&gt;, then &lt;x {{about}} z&gt;</em> - example: ex:ancestorOf<br/>
-	</fieldset> -->
+	</fieldset>
 </div>
 <vre-checkbox ppname="rdf:type" opname="owl:DataProperty"></vre-checkbox> This resource is a property that links a resource to simple values (dates, numbers, text).<br/>
 <vre-checkbox ppname="rdf:type" opname="owl:Thing"></vre-checkbox> This resource is an instance of a class.
 </fieldset>
 
 
-<!-- <fieldset ng-controller="VreVSTermStatus">
+<fieldset ng-controller="VreVSTermStatus">
 <legend>term status - <code>{{expand("vs:term_status")}}</code></legend>
 <p>the status of a vocabulary term, expressed as a short symbolic string; known values include 'unstable','testing', 'stable' and 'archaic'</p>
 <div ng-if="!hasProperty('vs:term_status')"><a ng-click="addStatus()">[add term status]</a></div>
@@ -70,7 +82,7 @@ This resource is defined in the ontology {{guri}}.<br/>
 <p>more information about the status etc of a term, typically human oriented</p>
 <div ng-if="!hasProperty('vs:moreinfos')"><a ng-click="addInfos()">[add term infos]</a></div>
 <div ng-if="hasProperty('vs:moreinfos')"><textarea rows="7" cols="30" ng-model="moreinfos['@value']"></textarea></div>
-</fieldset> -->
+</fieldset>
 
 
 <!-- <ve-object ng-repeat='label in editableLabels(false)'>{{label}}</ve-object>
