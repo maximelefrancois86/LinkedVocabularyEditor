@@ -1,6 +1,6 @@
 {
     "name": "LinkedVocabularyEditor",
-    "version": "0.1-alpha",
+    "version": "0.1.0",
     "description": "LinkedVocabularyEditor is a Media Wiki extension that enables to load, browse, collaboratively edit, and publish linked vocabularies.",
     "license": "BSD-3-Clause",
     "authors": [
