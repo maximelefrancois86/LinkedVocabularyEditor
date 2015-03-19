@@ -2,17 +2,12 @@
 
 namespace Lve;
 
+require 'databaseSettings.php';
 require '../vendor/autoload.php';
 require '../includes/LveArc2Store.php';
 error_reporting(E_ALL^E_DEPRECATED);
 
 $wgDBprefix = "ws";
-
-$wgDBtype = "mysql";
-$wgDBserver = "localhost";
-$wgDBname = "wikiseas2";
-$wgDBuser = "root";
-$wgDBpassword = "root";
 
 $wgARC2StoreConfig = array(
 	'db_host' => $wgDBserver,
