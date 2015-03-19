@@ -6,7 +6,14 @@
     "maximelefrancois86 <maxime.lefrancois.86@gmail.com>"
   ],
   "description": "LinkedVocabularyEditor is a Media Wiki extension that enables to load, browse, collaboratively edit, and publish linked vocabularies.",
-  "keywords": ["mediawiki", "angular", "semantic web", "linked vocabulary", "linked data", "jsonld"],
+  "keywords": [
+    "mediawiki",
+    "angular",
+    "semantic web",
+    "linked vocabulary",
+    "linked data",
+    "jsonld"
+  ],
   "main": "web/linked-resource-editor/linked-resource-editor.js",
   "license": "BSD-3-Clause",
   "ignore": [
@@ -18,6 +25,7 @@
     "angular": "~1.3.15",
     "angular-ui-select": "~0.11.2",
     "ngDialog": "~0.3.12",
-    "jsonld": "~0.3.22"
+    "jsonld": "~0.3.22",
+    "angular-sanitize": "~1.3.15"
   }
 }

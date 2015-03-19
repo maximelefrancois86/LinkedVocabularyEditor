@@ -32,6 +32,9 @@ class EditResource extends \EditPage {
 
 			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/angular-ui-select/dist/select.js"));
 			$wgOut->addScript(Html::linkedStyle("extensions/LinkedVocabularyEditor/web/vendor/angular-ui-select/dist/select.css"));
+			$wgOut->addScript(Html::linkedStyle("http://cdnjs.cloudflare.com/ajax/libs/select2/3.4.5/select2.css"));
+
+			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/angular-sanitize/angular-sanitize.js"));
 
 			$wgOut->addScript(Html::linkedScript("extensions/LinkedVocabularyEditor/web/vendor/ngDialog/js/ngDialog.js"));
 			$wgOut->addScript(Html::linkedStyle("extensions/LinkedVocabularyEditor/web/vendor/ngDialog/css/ngDialog.css"));

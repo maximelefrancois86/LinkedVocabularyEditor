@@ -1,2 +1,13 @@
+<div>
+
 <h1>Select a resource</h1>
-<p>Content goes here</p>
+Vocabulary: <select ng-model="r.ontology" ng-options="o.s.value as getOntologyLabel(o) for o in ontologies.results.bindings"/><br/>
+Term: <select ng-model="r.selected" ng-options="s as shorten(s.s.value) for s in resources.results.bindings | filter:{s:{value:r.ontology}}"/><br/>
+{{r.selected.comment.value}}
+
+<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(false)">Cancel</button>
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog(r.selected)">OK</button>
+</div>
+
+</div>
