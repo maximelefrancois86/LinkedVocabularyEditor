@@ -1,0 +1,127 @@
+<!-- Super Properties -->
+<fieldset ng-if="hasObjectResource('rdf:type', 'rdf:Property') || hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')">
+	<legend>
+		<strong>Are there direct super properties of <code>{{about}}</code> ?</strong>
+		<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Object_Subproperties" target="_blank">[?]</a></span>
+		<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Data_Subproperties" target="_blank">[?]</a></span>
+	</legend>
+	<vre-object-properties ppname="rdfs:subPropertyOf"></vre-object-properties>
+	<p>
+		<em>if <code>{{about}} rdfs:subPropertyOf ex:p</code>, and <code>ex:a {{about}} ex:b</code>, then <code>ex:a ex:p ex:b</code></em> 
+	</p>
+</fieldset>
+
+<!-- Equivalent Properties -->
+<fieldset ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')">
+<legend>
+	<strong>Are there known equivalent properties of <code>{{about}}</code> ?</strong>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Equivalent_Object_Properties" target="_blank">[?]</a></span>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Equivalent_Data_Properties" target="_blank">[?]</a></span>
+</legend>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')"><vre-object-object-properties ppname="owl:equivalentProperty"></vre-object-object-properties></span>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')"><vre-object-data-properties ppname="owl:equivalentProperty"></vre-object-data-properties></span>
+	<p>
+		<em>if <code>{{about}} owl:equivalentProperty ex:p</code>, then <code>ex:a {{about}} ex:b</code> if and only if <code>ex:a ex:p ex:b</code></em>
+	</p>
+</fieldset>
+
+<!-- Disjoint Object Properties -->
+<fieldset ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')">
+<legend>
+	<strong>Are there known disjoint properties of <code>{{about}}</code> ?</strong>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Disjoint_Object_Properties" target="_blank">[?]</a></span>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Disjoint_Data_Properties" target="_blank">[?]</a></span>
+</legend>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')"><vre-object-object-properties ppname="owl:propertyDisjointWith"></vre-object-object-properties></span>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')"><vre-object-data-properties ppname="owl:propertyDisjointWith"></vre-object-data-properties></span>
+	<p>
+		<em>if <code>{{about}} owl:propertyDisjointWith ex:p</code>, then no individual <code>x</code> can be connected to an individual <code>y</code>code> by both <code>{{about}}</code> and <code>ex:p</code></em>
+	</p>
+</fieldset>
+
+<!-- Inverse Object Properties -->
+<fieldset ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+<legend>
+	<strong>Are there known inverse properties of <code>{{about}}</code> ?</strong>
+	- <a href="http://www.w3.org/TR/owl2-syntax/#Inverse_Object_Properties_2" target="_blank">[?]</a>
+</legend>
+	<vre-object-object-properties ppname="owl:inverseOf"></vre-object-object-properties>
+	<p>
+		<em>if <code>{{about}} owl:inverseOf ex:p</code>, then <code>ex:a {{about}} ex:b</code> if and only if <code>ex:b ex:p ex:a</code></em>
+	</p>
+</fieldset>
+
+<!-- Property Domain -->
+<fieldset ng-if="hasObjectResource('rdf:type', 'rdf:Property') || hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')">
+<legend>
+	<strong>Are there known domains of <code>{{about}}</code> ?</strong>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Object_Property_Domain" target="_blank">[?]</a></span>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Data_Property_Domain" target="_blank">[?]</a></span>
+</legend>
+	<vre-object-classes ppname="rdfs:domain"></vre-object-classes>
+	<p>
+		<em>if <code>{{about}} rdfs:domain ex:A</code> and <code>ex:a {{about}} ex:b</code>, then <code>ex:a</code> is of type <code>ex:A</code></em>
+	</p>
+</fieldset>
+
+<!-- Object Property Range -->
+<fieldset>
+<legend>
+	<strong>Are there known ranges of <code>{{about}}</code> ?</strong>
+	- <a href="http://www.w3.org/TR/owl2-syntax/#Object_Property_Range" target="_blank">[?]</a>
+</legend>
+	<span ng-if="!hasObjectResource('rdf:type', 'owl:ObjectProperty') && !hasObjectResource('rdf:type', 'owl:DataProperty')"><vre-object-resources ppname="rdfs:range"></vre-object-resources></span>
+	<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty') && !hasObjectResource('rdf:type', 'owl:DataProperty')"><vre-object-classes ppname="rdfs:range"></vre-object-classes></span>
+	<span ng-if="!hasObjectResource('rdf:type', 'owl:ObjectProperty') && hasObjectResource('rdf:type', 'owl:DataProperty')"><vre-object-data-types ppname="rdfs:range"></vre-object-data-types></span>
+	<p>
+		<em>if <code>{{about}} rdfs:range ex:B</code> and <code>ex:a {{about}} ex:b</code>, then <code>ex:b</code> is of type <code>ex:B</code></em>
+	</p>
+</fieldset>
+
+<!-- Mathematical properties -->
+<fieldset ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')">
+<legend><strong>Mathematical properties of {{about}}</strong></legend>
+	<p>
+		<vre-checkbox ppname="rdf:type" opname="owl:FunctionalProperty"></vre-checkbox> This property is functional
+		<span ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Functional_Object_Properties" target="_blank">[?]</a></span>
+		<span ng-if="hasObjectResource('rdf:type', 'owl:DataProperty')">- <a href="http://www.w3.org/TR/owl2-syntax/#Functional_Data_Properties" target="_blank">[?]</a></span>
+		- <em>if <code>x {{about}} y<sub>1</sub></code>; and <code>x {{about}} y<sub>2</sub></code>, then <code>y<sub>1</sub>=y<sub>2</sub></code></em>
+	</p>
+	<p ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+		<vre-checkbox ppname="rdf:type" opname="owl:InverseFunctionalProperty"></vre-checkbox> This property is inverse-functional
+		- <a href="http://www.w3.org/TR/owl2-syntax/#Inverse-Functional_Object_Properties" target="_blank">[?]</a> 
+		- <em>if <code>x<sub>1</sub> {{about}} y</code> and <code>x<sub>2</sub> {{about}} y</code>, then <code>x<sub>1</sub>=x<sub>2</sub></code></em>
+		- example: <code>ex:fatherOf</code>
+	</p>
+	<p ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+		<vre-checkbox ppname="rdf:type" opname="owl:ReflexiveProperty"></vre-checkbox> This property is reflexive
+		- <a href="http://www.w3.org/TR/owl2-syntax/#Reflexive_Object_Properties" target="_blank">[?]</a> 
+		- <em>every instance is linked to itself by {{about}}</em>
+		- example: <code>ex:knows</code>
+		
+	</p>
+	<p ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+		<vre-checkbox ppname="rdf:type" opname="owl:IrreflexiveProperty"></vre-checkbox> This property is irreflexive
+		- <a href="http://www.w3.org/TR/owl2-syntax/#Irreflexive_Object_Properties" target="_blank">[?]</a>
+		- <em>if <code>x {{about}} x</code>, then the ontology is inconsistent (this is an error)</em> - example: <code>ex:marriedTo</code>
+	</p>
+	<p ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+		<vre-checkbox ppname="rdf:type" opname="owl:SymmetricProperty"></vre-checkbox> This property is symmetric
+		- <a href="http://www.w3.org/TR/owl2-syntax/#Symmetric_Object_Properties" target="_blank">[?]</a>
+		- <em>if <code>x {{about}} y</code>, then <code>y {{about}} x</code></em>
+		- example: <code>ex:friend</code>
+	</p>
+	<p ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+		<vre-checkbox ppname="rdf:type" opname="owl:AsymmetricProperty"></vre-checkbox> This property is asymmetric
+		- <a href="http://www.w3.org/TR/owl2-syntax/#Asymmetric_Object_Properties" target="_blank">[?]</a>
+		- <em>if <code>x {{about}} x</code>, then the ontology is inconsistent (this is an error)</em>
+		- example: <code>ex:parentOf</code>
+	</p>
+	<p ng-if="hasObjectResource('rdf:type', 'owl:ObjectProperty')">
+		<vre-checkbox ppname="rdf:type" opname="owl:TransitiveProperty"></vre-checkbox> This property is transitive
+		- <a href="http://www.w3.org/TR/owl2-syntax/#Transitive_Object_Properties" target="_blank">[?]</a>
+		- <em>if <code>x {{about}} y</code> and <code>y {{about}} z</code>, then <code>x {{about}} z</code></em> 
+		- example: <code>ex:ancestorOf</code>
+	</p>
+</fieldset>
+

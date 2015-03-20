@@ -14,6 +14,11 @@ vreModule.controller('VEController', ['$scope', function($scope) {
 	$scope.getComment = getComment; // method to shorten a uri 
 	$scope.getLabel = getLabel; // method to expand a uri 
 	$scope.about = about; // the prefixed name of the resource
+
+	$scope.fragment = $scope.about.split(":")[1];
+	$scope.isOntology = ""===$scope.fragment;
+	$scope.isAClass = /[A-Z]/.test( $scope.fragment[0]);
+
 	$scope.prefix = $scope.about.substring(0,$scope.about.indexOf(":")); // the prefix of the resource
 	$scope.guri = namespaces[$scope.prefix]; // the uri of the graph that defines this resource
 	$scope.uri = $scope.guri + $scope.about.substring($scope.about.indexOf(":")+1); // the uri of the resource that is edited

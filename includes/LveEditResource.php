@@ -61,7 +61,7 @@ class EditResource extends \EditPage {
 			    </script>
 			  <![endif]-->");
 
-			$wgOut->setPageTitle("Editing " . $editor->mAbout->getPName()); // to be placed after
+			$wgOut->setPageTitle("Editing resource " . $editor->mAbout->getPName()); // to be placed after
 			$wgOut->addWikitext("'''URI: '''= " . $editor->mAbout->getExtLink() . "\n");
 
 			// bind JSON-LD document to a javascript variable
@@ -156,12 +156,13 @@ class EditResource extends \EditPage {
 		} else {
 			$node->addPropertyValue(self::expand("rdfs", "label"), new LanguageTaggedString("", "en"));
 			$node->addPropertyValue(self::expand("rdfs", "comment"), new LanguageTaggedString("", "en"));
-			$node->addPropertyValue(self::expand("rdfs", "idDefinedBy"), $graph->createNode($guri));
+			$node->addPropertyValue(self::expand("rdfs", "isDefinedBy"), $graph->createNode($guri));
 			$node->addPropertyValue(self::expand("vs", "term_status"), "unstable");
 		}
 
 		$content = new JsonldContent($doc->toJsonLd());
 		$text = $content->getNativeData();
+
 		return true;
 	}
 
@@ -170,10 +171,10 @@ class EditResource extends \EditPage {
 	}
 
 	public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {
-		// $title = $article->getPage()->getTitle();
-		// if ($title->getNamespace() != NS_RESOURCE) {
-		// 	return true;
-		// }
+		$title = $article->getPage()->getTitle();
+		if ($title->getNamespace() != NS_RESOURCE) {
+			return true;
+		}
 
 		// // get content,
 		// $text = $content->getDocument();

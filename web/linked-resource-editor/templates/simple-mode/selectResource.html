@@ -1,6 +1,8 @@
 <div>
 
 <h1>Select a resource</h1>
+
+
 Vocabulary: <select ng-model="r.ontology" ng-options="o.s.value as getOntologyLabel(o) for o in ontologies.results.bindings"/><br/>
 Term: <select ng-model="r.selected" ng-options="s as shorten(s.s.value) for s in resources.results.bindings | filter:{s:{value:r.ontology}}"/><br/>
 {{r.selected.comment.value}}

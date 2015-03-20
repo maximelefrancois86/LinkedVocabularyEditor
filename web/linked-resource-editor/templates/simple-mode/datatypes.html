@@ -1,0 +1,6 @@
+<ul>
+<li ng-repeat='object in s[expand(ppname)]'> 
+	<select ng-model="object['@id']" ng-options="dtype.uri as ''+dtype.label+' - '+dtype.desc for dtype in datatypes"/> <a ng-click="delete(object)">[delete]</a>
+</li>
+</ul>
+<div><a ng-click="addDataType()">[add range]</a></div>

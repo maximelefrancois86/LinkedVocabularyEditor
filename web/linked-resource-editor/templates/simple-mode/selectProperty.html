@@ -1,0 +1,38 @@
+<div>
+
+<h1>Select a property</h1>
+
+
+Vocabulary: <select ng-model="r.ontology" ng-options="o.s.value as getOntologyLabel(o) for o in ontologies.results.bindings"/><br/>
+Property: <select ng-model="r.selected" ng-options="s as shorten(s.s.value) for s in resources.results.bindings | filter:{s:{value:r.ontology}}"/><br/>
+{{r.selected.comment.value}}
+
+
+<details>
+<summary>You don't find the property you are looking for?</summary>
+<ul>
+<li><strong>It belongs to a vocabulary that has not been imported yet, hence it has no wiki page:</strong> <p>Write your need in the <em>moreinfo</em> box, and ask the sysadmin for review.</p></li>
+<li><strong>It belongs to the vocabulary you are developing, but it has no wiki page yet:</strong>
+	<ol>
+		<li>create it first and declare it as a cproperty: <select ng-model="p" ng-options="o.s.value as getOntologyLabel(o) for o in ontologies.results.bindings"/><input type="text" ng-model="t"/><a target="_blank" href="{{newPropertyUrl()}}">[create new resource]</a></li>
+		<li>re-open this dialog.</li>
+	</ol>
+</li>
+<li><strong>It has a wiki page, but it is not declared as a property:</strong> <p>Make sure you need it to be a property, then:</p>
+	<ol>
+		<li>declare it as a property;</li>
+		<li>re-open this dialog.</li>
+	</ol>
+</li>
+</ul>
+
+
+</details>
+
+
+<div class="ngdialog-buttons">
+    <button type="button" class="ngdialog-button ngdialog-button-secondary" ng-click="closeThisDialog(false)">Cancel</button>
+    <button type="button" class="ngdialog-button ngdialog-button-primary" ng-click="closeThisDialog(r.selected)">OK</button>
+</div>
+
+</div>

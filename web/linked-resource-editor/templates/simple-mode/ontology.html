@@ -1,0 +1,42 @@
+
+<fieldset>
+	<legend>
+		<strong>informations</strong>
+	</legend>
+
+	<p>Preferred namespace prefix: {{s[expand("vann:preferredNamespacePrefix")][0]["@value"]}}</p>
+
+	<p>Preferred namespace uri: {{s[expand("vann:preferredNamespaceUri")][0]["@value"]}}</p>
+
+	<p>issued: {{s[expand("dc:issued")][0]["@value"]}}</p>
+
+	<p>modified: {{s[expand("dc:modified")][0]["@value"]}}</p>
+
+	<p>version info: {{s[expand("owl:versionInfo")][0]["@value"]}}</p>
+
+	<p>license: {{s[expand("cc:license")]}}</p>
+
+	<p>creator: {{s[expand("dc:creator")]}}</p>
+</fieldset>
+
+
+<fieldset>
+	<legend>
+		<strong>Provide human-readable title for <code>{{about}}</code></strong>
+	</legend>
+	<vre-lang-strings ppname="dc:title"></vre-lang-strings>
+</fieldset>
+
+<fieldset>
+	<legend>
+		<strong>Provide human-readable descriptions for <code>{{about}}</code></strong>
+	</legend>
+	<vre-lang-strings ppname="dc:description"></vre-lang-strings>
+</fieldset>
+
+<fieldset>
+	<legend>
+		<strong>Provide human-readable comments for <code>{{about}}</code></strong>
+	</legend>
+	<vre-lang-strings ppname="rdfs:comment"></vre-lang-strings>
+</fieldset>

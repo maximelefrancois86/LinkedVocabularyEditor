@@ -1,0 +1,33 @@
+<fieldset>
+<legend>
+	<strong>What are the direct super classes of <code>{{about}}</code> ?</strong>
+	- <a href="http://www.w3.org/TR/owl2-syntax/#Subclass_Axioms" target="_blank">[?]</a>
+</legend>
+	<vre-object-classes ppname="rdfs:subClassOf"></vre-object-classes>
+	<p>
+		<em>if <code>SubClassOf( {{about}} ex:A )</code>, then any instance of <code>{{about}}</code> is also an instance of <code>ex:A</code></em> 
+		- example: <code>ex:Baby rdfs:subClassOf ex:Child</code>
+	</p>
+</fieldset>
+<fieldset>
+<legend>
+	<strong>Are there other classes that are equivalent to <code>{{about}}</code> ?</strong>
+	- <a href="http://www.w3.org/TR/owl2-syntax/#Equivalent_Classes" target="_blank">[?]</a>
+</legend>
+	<vre-object-classes ppname="owl:equivalentClass"></vre-object-classes>
+	<p>
+		<em>if <code>{{about}} owl:equivalentClass ex:A</code>, then an individual is an instance of <code>{{about}}</code> if and only if it is an instance of <code>ex:A</code></em> 
+		- example: <code>ex:Boy owl:equivalentClass ex:Kinder</code>
+	</p>
+</fieldset>
+<fieldset>
+<legend>
+	<strong>Are there other classes that are disjoint with <code>{{about}}</code> ?</strong>
+	- <a href="http://www.w3.org/TR/owl2-syntax/#Disjoint_Classes" target="_blank">[?]</a>
+</legend>
+	<vre-object-classes ppname="owl:disjointWith"></vre-object-classes>
+	<p>
+		<em>if <code>{{about}} owl:disjointWith ex:A</code>, then an individual is an instance of <code>{{about}}</code> if and only if it is <strong>not</strong> an instance of <code>a:X</code></em> 
+		- example: <code>ex:Boy owl:disjointWith ex:Girl</code>
+	</p>
+</fieldset>

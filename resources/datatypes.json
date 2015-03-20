@@ -1,221 +1,221 @@
 [
 	{
-		"value": "rdf:HTML",
+		"uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#HTML",
 		"label": "rdf:HTML",
 		"desc": "HTML document"
 	},
 	{
-		"value": "rdf:XMLLiteral",
+		"uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#XMLLiteral",
 		"label": "rdf:XMLLiteral",
 		"desc": "XML document"
 	},
 	{
-		"value": "owl:real",
+		"uri": "http://www.w3.org/2002/07/owl#real",
 		"label": "owl:real",
 		"desc": "A real number"
 	},
 	{
-		"value": "owl:rational",
+		"uri": "http://www.w3.org/2002/07/owl#rational",
 		"label": "owl:rational",
 		"desc": "A rational number"
 	},
 	{
-		"value": "rdf:langString",
+		"uri": "http://www.w3.org/1999/02/22-rdf-syntax-ns#langString",
 		"label": "rdf:langString",
 		"desc": "A language-tagged string"
 	},
 	{
-		"value": "xsd:string",
+		"uri": "http://www.w3.org/2001/XMLSchema#string",
 		"label": "xsd:string",
 		"desc": "Character strings (but not all Unicode character strings)"
 	},
 	{
-		"value": "xsd:boolean",
+		"uri": "http://www.w3.org/2001/XMLSchema#boolean",
 		"label": "xsd:boolean",
 		"desc": "true, false"
 	},
 	{
-		"value": "xsd:decimal",
+		"uri": "http://www.w3.org/2001/XMLSchema#decimal",
 		"label": "xsd:decimal",
 		"desc": "Arbitrary-precision decimal numbers"
 	},
 	{
-		"value": "xsd:integer",
+		"uri": "http://www.w3.org/2001/XMLSchema#integer",
 		"label": "xsd:integer",
 		"desc": "Arbitrary-size integer numbers"
 	},
 	{
-		"value":  "xsd:double",
+		"uri": "http://www.w3.org/2001/XMLSchema#double",
 		"label":  "xsd:double",
 		"desc": "64-bit floating point numbers incl. ±Inf, ±0, NaN"
 	},
 	{
-		"value": "xsd:float",
+		"uri": "http://www.w3.org/2001/XMLSchema#float",
 		"label": "xsd:float",
 		"desc": "32-bit floating point numbers incl. ±Inf, ±0, NaN"
 	},
 	{
-		"value": "xsd:date",
+		"uri": "http://www.w3.org/2001/XMLSchema#date",
 		"label": "xsd:date",
 		"desc": "Dates (yyyy-mm-dd) with or without timezone"
 	},
 	{
-		"value": "xsd:time",
+		"uri": "http://www.w3.org/2001/XMLSchema#time",
 		"label": "xsd:time",
 		"desc": "Times (hh:mm:ss.sss…) with or without timezone"
 	},
 	{
-		"value": "xsd:dateTime",
+		"uri": "http://www.w3.org/2001/XMLSchema#dateTime",
 		"label": "xsd:dateTime",
 		"desc": "Date and time with or without timezone"
 	},
 	{
-		"value": "xsd:dateTimeStamp",
+		"uri": "http://www.w3.org/2001/XMLSchema#dateTimeStamp",
 		"label": "xsd:dateTimeStamp",
 		"desc": "Date and time with required timezone"
 	},
 	{
-		"value": "xsd:gYear",
+		"uri": "http://www.w3.org/2001/XMLSchema#gYear",
 		"label": "xsd:gYear",
 		"desc": "Gregorian calendar year"
 	},
 	{
-		"value":  "xsd:gMonth",
+		"uri": "http://www.w3.org/2001/XMLSchema#gMonth",
 		"label":  "xsd:gMonth",
 		"desc": "Gregorian calendar month"
 	},
 	{
-		"value": "xsd:gDay",
+		"uri": "http://www.w3.org/2001/XMLSchema#gDay",
 		"label": "xsd:gDay",
 		"desc": "Gregorian calendar day of the month"
 	},
 	{
-		"value": "xsd:gYearMonth",
+		"uri": "http://www.w3.org/2001/XMLSchema#gYearMonth",
 		"label": "xsd:gYearMonth",
 		"desc": "Gregorian calendar year and month"
 	},
 	{
-		"value": "xsd:gMonthDay",
+		"uri": "http://www.w3.org/2001/XMLSchema#gMonthDay",
 		"label": "xsd:gMonthDay",
 		"desc": "Gregorian calendar month and day"
 	},
 	{
-		"value": "xsd:duration",
+		"uri": "http://www.w3.org/2001/XMLSchema#duration",
 		"label": "xsd:duration",
 		"desc": "Duration of time"
 	},
 	{
-		"value": "xsd:yearMonthDuration",
+		"uri": "http://www.w3.org/2001/XMLSchema#yearMonthDuration",
 		"label": "xsd:yearMonthDuration",
 		"desc": "Duration of time (months and years only)"
 	},
 	{
-		"value": "xsd:dayTimeDuration",
+		"uri": "http://www.w3.org/2001/XMLSchema#dayTimeDuration",
 		"label": "xsd:dayTimeDuration",
 		"desc" : "Duration of time (days, hours, minutes, seconds only)"
 	},
 	{
-		"value": "xsd:byte",
+		"uri": "http://www.w3.org/2001/XMLSchema#byte",
 		"label": "xsd:byte",
 		"desc": "-128…+127 (8 bit)"
 	},
 	{
-		"value": "xsd:short",
+		"uri": "http://www.w3.org/2001/XMLSchema#short",
 		"label": "xsd:short",
 		"desc": "-32768…+32767 (16 bit)"
 	},
 	{
-		"value":  "xsd:int",
+		"uri": "http://www.w3.org/2001/XMLSchema#int",
 		"label":  "xsd:int",
 		"desc": "-2147483648…+2147483647 (32 bit)"
 	},
 	{
-		"value": "xsd:long",
+		"uri": "http://www.w3.org/2001/XMLSchema#long",
 		"label": "xsd:long",
 		"desc": "-9223372036854775808…+9223372036854775807 (64 bit)"
 	},
 	{
-		"value":  "xsd:unsignedByte",
+		"uri": "http://www.w3.org/2001/XMLSchema#unsignedByte",
 		"label":  "xsd:unsignedByte",
 		"desc": "0…255 (8 bit)"
 	},
 	{
-		"value": "xsd:unsignedShort",
+		"uri": "http://www.w3.org/2001/XMLSchema#unsignedShort",
 		"label": "xsd:unsignedShort",
 		"desc":  "0…65535 (16 bit)"
 	},
 	{
-		"value": "xsd:unsignedInt",
+		"uri": "http://www.w3.org/2001/XMLSchema#unsignedInt",
 		"label": "xsd:unsignedInt",
 		"desc":  "0…4294967295 (32 bit)"
 	},
 	{
-		"value": "xsd:unsignedLong",
+		"uri": "http://www.w3.org/2001/XMLSchema#unsignedLong",
 		"label": "xsd:unsignedLong",
 		"desc": "0…18446744073709551615 (64 bit)"
 	},
 	{
-		"value": "xsd:positiveInteger",
+		"uri": "http://www.w3.org/2001/XMLSchema#positiveInteger",
 		"label": "xsd:positiveInteger",
 		"desc": "Integer numbers >0"
 	},
 	{
-		"value": "xsd:nonNegativeInteger",
+		"uri": "http://www.w3.org/2001/XMLSchema#nonNegativeInteger",
 		"label": "xsd:nonNegativeInteger",
 		"desc":  "Integer numbers ≥0"
 	},
 	{
-		"value": "xsd:negativeInteger",
+		"uri": "http://www.w3.org/2001/XMLSchema#negativeInteger",
 		"label": "xsd:negativeInteger",
 		"desc":  "Integer numbers <0"
 	},
 	{
-		"value": "xsd:nonPositiveInteger",
+		"uri": "http://www.w3.org/2001/XMLSchema#nonPositiveInteger",
 		"label": "xsd:nonPositiveInteger",
 		"desc": "Integer numbers ≤0"
 	},
 	{
-		"value": "xsd:hexBinary",
+		"uri": "http://www.w3.org/2001/XMLSchema#hexBinary",
 		"label": "xsd:hexBinary",
 		"desc": "Hex-encoded binary data"
 	},
 	{
-		"value": "xsd:base64Binary",
+		"uri": "http://www.w3.org/2001/XMLSchema#base64Binary",
 		"label": "xsd:base64Binary",
 		"desc": "Base64-encoded binary data"
 	},
 	{
-		"value": "xsd:anyURI",
+		"uri": "http://www.w3.org/2001/XMLSchema#anyURI",
 		"label": "xsd:anyURI",
 		"desc": "Absolute or relative URIs and IRIs"
 	},
 	{
-		"value":  "xsd:language",
+		"uri": "http://www.w3.org/2001/XMLSchema#language",
 		"label":  "xsd:language",
 		"desc": "Language tags per [BCP47]"
 	},
 	{
-		"value": "xsd:normalizedString",
+		"uri": "http://www.w3.org/2001/XMLSchema#normalizedString",
 		"label": "xsd:normalizedString",
 		"desc":  "Whitespace-normalized strings"
 	},
 	{
-		"value":  "xsd:token",
+		"uri": "http://www.w3.org/2001/XMLSchema#token",
 		"label":  "xsd:token",
 		"desc": "Tokenized strings"
 	},
 	{
-		"value": "xsd:NMTOKEN",
+		"uri": "http://www.w3.org/2001/XMLSchema#NMTOKEN",
 		"label": "xsd:NMTOKEN",
 		"desc":  "XML NMTOKENs"
 	},
 	{
-		"value":  "xsd:Name",
+		"uri": "http://www.w3.org/2001/XMLSchema#Name",
 		"label":  "xsd:Name",
 		"desc": "XML Names"
 	},
 	{
-		"value": "xsd:NCName",
+		"uri": "http://www.w3.org/2001/XMLSchema#NCName",
 		"label": "xsd:NCName",
 		"desc":  "XML NCNames"
 	}
