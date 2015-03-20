@@ -171,19 +171,26 @@ class EditResource extends \EditPage {
 	}
 
 	public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {
-		$title = $article->getPage()->getTitle();
+		$title = $article->getTitle();
 		if ($title->getNamespace() != NS_RESOURCE) {
 			return true;
 		}
 
-		// // get content,
-		// $text = $content->getDocument();
+		// get content,
+		$text = $article->getContent()->getNativeData();
+		$old = $article->getRevision()->getPrevious()->getContent()->getNativeData();
 
-		// global $wgOut;
+		global $wgOut;
 
-		// $wgOut->addInlineScript("console.log('this revision', ".json_encode().");");
-		// $wgOut->addInlineScript("console.log()");
+		$wgOut->addInlineScript("console.log('this revision');");
+		$wgOut->addInlineScript("console.log('this revision', '" . $text . "');");
+		$wgOut->addInlineScript("console.log('this revision', '" . $old . "');");
 
+		$title = \Title::newFromText("test");
+		$article = new \Article($title);
+
+		$newContent = new \WikitextContent($text . '\n\n\n\n' . $old);
+		$article->doEditContent($newContent, "updated graph .");
 		return true;
 	}
 }
