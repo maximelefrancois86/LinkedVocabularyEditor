@@ -72,7 +72,7 @@ class ImportPage extends SpecialPage {
 		$guri = $easyGraph->getUri();
 		$triples = Arc2Store::toTriples($easyGraph);
 		$store->delete(1, $guri);
-		$store->insert($triples, $guri);
+//		$store->insert($triples, $guri);
 	}
 
 	function updateWiki($easyGraph) {

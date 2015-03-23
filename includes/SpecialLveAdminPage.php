@@ -70,6 +70,8 @@ class AdminPage extends SpecialPage {
 				RdfNamespace::resetNamespaces();
 				RdfNamespace::set("vann", "http://purl.org/vocab/vann/");
 				RdfNamespace::set("voaf", "http://purl.org/vocommons/voaf#");
+				RdfNamespace::set("seas", "http://purl.org/NET/seas#");
+				RdfNamespace::set("vs", "http://www.w3.org/2003/06/sw-vocab-status/ns#");
 				Arc2Store::writeNamespaces();
 			} else {
 				$this->getOutput()->addWikiText(wfMessage('lve-setup-failed')->text());

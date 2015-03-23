@@ -281,7 +281,7 @@ vreModule.directive('vreObjectDataTypes', function() {
 						delete $scope.s[expand($scope.ppname)];
 					}
  	 			});
-			}
+			};
 		}],
 		restrict: 'E',
     	templateUrl: "extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/datatypes.html",
@@ -356,7 +356,7 @@ selectResourceFn = function(ngDialog, callback) {
 				"SELECT ?s ?title WHERE {",
 				"?s a owl:Ontology .",
 				"OPTIONAL {?s dc:title ?title}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			var queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -371,7 +371,7 @@ selectResourceFn = function(ngDialog, callback) {
 				"?s a ?o",
 				"OPTIONAL {?s rdfs:label ?label}",
 				"OPTIONAL {?s rdfs:comment ?comment}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -389,7 +389,7 @@ selectResourceFn = function(ngDialog, callback) {
 
 		}],
 		// showClose: false,
-		closeByEscape: false,
+		closeByEscape:true,
 		// closeByDocument: false,
 		cache: false,
 		template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/selectResource.html',
@@ -416,7 +416,7 @@ selectClassFn = function(ngDialog, callback) {
 				"SELECT ?s ?title WHERE {",
 				"?s a owl:Ontology .",
 				"OPTIONAL {?s dc:title ?title}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			var queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -429,11 +429,9 @@ selectClassFn = function(ngDialog, callback) {
 				"Prefix dc: <http://purl.org/dc/elements/1.1/> .",
 				"SELECT ?s ?label ?comment WHERE {",
 				"{ ?s a rdfs:Class }",
-				"UNION",
-				"{ ?s a owl:Class }",
 				"OPTIONAL {?s rdfs:label ?label}",
 				"OPTIONAL {?s rdfs:comment ?comment}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -450,9 +448,6 @@ selectClassFn = function(ngDialog, callback) {
 			};
 
 		}],
-		// showClose: false,
-		closeByEscape: false,
-		// closeByDocument: false,
 		cache: false,
 		template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/selectClass.html',
 	}).closePromise.then(function(value) {
@@ -479,7 +474,7 @@ selectPropertyFn = function(ngDialog, callback) {
 				"SELECT ?s ?title WHERE {",
 				"?s a owl:Ontology .",
 				"OPTIONAL {?s dc:title ?title}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			var queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -490,7 +485,7 @@ selectPropertyFn = function(ngDialog, callback) {
 
 			query = [
 				"Prefix dc: <http://purl.org/dc/elements/1.1/> .",
-				"SELECT ?s ?label ?comment WHERE {",
+				"SELECT DISTINCT ?s ?label ?comment WHERE {",
 				"{ ?s a rdf:Property }",
 				"UNION",
 				"{ ?s a owl:ObjectProperty }",
@@ -498,7 +493,7 @@ selectPropertyFn = function(ngDialog, callback) {
 				"{ ?s a owl:DataProperty }",
 				"OPTIONAL {?s rdfs:label ?label}",
 				"OPTIONAL {?s rdfs:comment ?comment}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -515,9 +510,6 @@ selectPropertyFn = function(ngDialog, callback) {
 			};
 
 		}],
-		// showClose: false,
-		closeByEscape: false,
-		// closeByDocument: false,
 		cache: false,
 		template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/selectProperty.html',
 	}).closePromise.then(function(value) {
@@ -544,7 +536,7 @@ selectObjectPropertyFn = function(ngDialog, callback) {
 				"SELECT ?s ?title WHERE {",
 				"?s a owl:Ontology .",
 				"OPTIONAL {?s dc:title ?title}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			var queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -559,7 +551,7 @@ selectObjectPropertyFn = function(ngDialog, callback) {
 				"?s a owl:ObjectProperty",
 				"OPTIONAL {?s rdfs:label ?label}",
 				"OPTIONAL {?s rdfs:comment ?comment}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -601,7 +593,7 @@ selectDataPropertyFn = function(ngDialog, callback) {
 				"SELECT ?s ?title WHERE {",
 				"?s a owl:Ontology .",
 				"OPTIONAL {?s dc:title ?title}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			var queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -616,7 +608,7 @@ selectDataPropertyFn = function(ngDialog, callback) {
 				"?s a owl:DataProperty",
 				"OPTIONAL {?s rdfs:label ?label}",
 				"OPTIONAL {?s rdfs:comment ?comment}",
-				"}"
+				"} GROUP BY ?s"
 			].join(" ");						
 			queryUrl = endpoint+"?query="+ encodeURIComponent(query) +"&format=json";
 
@@ -633,9 +625,6 @@ selectDataPropertyFn = function(ngDialog, callback) {
 			};
 
 		}],
-		// showClose: false,
-		closeByEscape: false,
-		// closeByDocument: false,
 		cache: false,
 		template: 'extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/selectDataProperty.html',
 	}).closePromise.then(function(value) {

@@ -20,7 +20,7 @@ $wgARC2StoreConfig = array(
 	/* endpoint */
 	'endpoint_features' => array(
 		'select', 'construct', 'ask', 'describe',
-		//'load', 'insert', 'delete',
+		'load', 'insert', 'delete',
 		//'dump', /* dump is a special command for streaming SPOG export */
 	),
 	'endpoint_timeout' => 60, /* not implemented in ARC2 preview */

@@ -2,8 +2,10 @@
 
 namespace Lve;
 
+use EasyRdf\Graph;
 use EasyRdf\RdfNamespace;
 use ML\JsonLD\Document;
+use ML\JsonLD\JsonLD;
 use ML\JsonLD\LanguageTaggedString;
 use ML\JsonLD\TypedValue;
 use \Article;
@@ -134,7 +136,7 @@ class EditResource extends \EditPage {
 
 		$guri = RdfNamespace::get($prefix);
 		if (!$guri || $guri == "") {
-			return "Warning, the prefix part does not seem to exist yet. Please register it at [[Special:Namespaces]]";
+			return "Warning, prefix <strong>$prefix</strong> has not been registered yet. Please register it at <a href='index.php?title=Special:EditNamespaces'>Special:EditNamespaces</a>";
 		}
 
 		$doc = new Document();
@@ -154,7 +156,7 @@ class EditResource extends \EditPage {
 			$node->addPropertyValue(self::expand("cc", "license"), "");
 			$node->addPropertyValue(self::expand("dc", "creator"), "");
 		} else {
-			$node->addPropertyValue(self::expand("rdfs", "label"), new LanguageTaggedString("", "en"));
+			$node->addPropertyValue(self::expand("rdfs", "label"), new LanguageTaggedString($fragment, "en"));
 			$node->addPropertyValue(self::expand("rdfs", "comment"), new LanguageTaggedString("", "en"));
 			$node->addPropertyValue(self::expand("rdfs", "isDefinedBy"), $graph->createNode($guri));
 			$node->addPropertyValue(self::expand("vs", "term_status"), "unstable");
@@ -176,21 +178,47 @@ class EditResource extends \EditPage {
 			return true;
 		}
 
-		// get content,
-		$text = $article->getContent()->getNativeData();
-		$old = $article->getRevision()->getPrevious()->getContent()->getNativeData();
+		// for every graph, generate the sparql update that modifies the named graph
+		$store = Arc2Store::getStore();
 
-		global $wgOut;
+		$text = "";
 
-		$wgOut->addInlineScript("console.log('this revision');");
-		$wgOut->addInlineScript("console.log('this revision', '" . $text . "');");
-		$wgOut->addInlineScript("console.log('this revision', '" . $old . "');");
+		if ($article->getRevision()->getPrevious() !== null) {
+			$olddoc = $article->getRevision()->getPrevious()->getContent()->getDocument();
+			foreach ($olddoc->getGraphNames() as $graph) {
+				if (strrpos($graph, "_:") === 0) {
+					continue;
+				}
+				$oldgraph = JsonLD::toString($olddoc->getGraph($graph)->toJsonLd());
+				$oldEasyGraph = new \EasyRdf\Graph();
+				$oldEasyGraph->parse($oldgraph, "jsonld");
+				$oldN3 = $oldEasyGraph->serialise("ntriples");
+				$text .= "\n\n DELETE FROM <$graph> { $oldN3 }";
+				$store->query("DELETE FROM <$graph> { $oldN3 }");
+			}
+		}
 
-		$title = \Title::newFromText("test");
-		$article = new \Article($title);
+		$newdoc = $article->getContent()->getDocument();
+		foreach ($newdoc->getGraphNames() as $graph) {
+			if (strrpos($graph, "_:") === 0) {
+				continue;
+			}
+			$newgraph = JsonLD::toString($newdoc->getGraph($graph)->toJsonLd());
+			$newEasyGraph = new \EasyRdf\Graph();
+			$newEasyGraph->parse($newgraph, "jsonld");
+			$newN3 = $newEasyGraph->serialise("ntriples");
+			$text .= "\n\n INSERT INTO <$graph> { $newN3 }";
+			$store->query("INSERT INTO <$graph> { $newN3 }");
+		}
 
-		$newContent = new \WikitextContent($text . '\n\n\n\n' . $old);
-		$article->doEditContent($newContent, "updated graph .");
+		$content = new \WikitextContent($text);
+
+		$title = \Title::newFromText("Test:" . $article->getTitle()->getText());
+
+		$article = new Article($title);
+		$article->doEditContent($content, "updated graph.");
+
 		return true;
+
 	}
 }
