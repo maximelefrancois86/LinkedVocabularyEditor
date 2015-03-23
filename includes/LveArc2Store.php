@@ -10,7 +10,7 @@ class Arc2Store {
 		global $wgARC2StoreConfig;
 		$store = \ARC2::getStore($wgARC2StoreConfig);
 		if (!$store->isSetUp()) {
-			die('Store is not set up. Go to Special:VEAdminPage to set it up.');
+			$store->setUp();
 		}
 		return $store;
 	}

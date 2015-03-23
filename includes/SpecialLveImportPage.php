@@ -22,7 +22,7 @@ use \SpecialPage;
 class ImportPage extends SpecialPage {
 
 	function __construct() {
-		parent::__construct('ImportVocabularies');
+		parent::__construct('ImportVocabularies', 'edit');
 	}
 
 	function getGroupName() {

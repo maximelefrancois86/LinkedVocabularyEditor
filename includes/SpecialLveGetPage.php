@@ -61,7 +61,7 @@ class GetPage extends SpecialPage {
 			prefix = "' . $prefix . '";
 			fragment = window.location.hash.substring(1);
 
-			window.location.replace(start + "/Resource:"+prefix+":"+fragment);
+			window.location.replace(start + "index.php?title=Resource:"+prefix+":"+fragment);
 
 			</script>
 			</head>

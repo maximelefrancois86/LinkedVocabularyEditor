@@ -15,7 +15,7 @@ use \SpecialPage;
 class NamespacesPage extends SpecialPage {
 
 	function __construct() {
-		parent::__construct('EditNamespaces');
+		parent::__construct('EditNamespaces', 'edit');
 	}
 
 	function getGroupName() {
