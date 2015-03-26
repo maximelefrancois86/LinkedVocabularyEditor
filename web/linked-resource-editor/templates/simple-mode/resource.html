@@ -11,8 +11,8 @@
 		- <a href="http://www.w3.org/TR/owl2-syntax/#Classes" target="_blank">[?]</a>
 	</p>
 	<p>
-		<input type="checkbox" ng-checked="hasObjectResource('rdf:type', 'rdf:Property')" ng-click="toggleObjectResource('rdf:type', 'rdf:Property')"/> This resource is a property<span ng-if="!hasObjectResource('rdf:type', 'rdf:Property')">.</span>
-		<span ng-if="hasObjectResource('rdf:type', 'rdf:Property')"> that links individuals to
+		<input type="checkbox" ng-checked="hasObjectResource('rdf:type', 'rdf:Property') || hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')" ng-click="toggleObjectResource('rdf:type', 'rdf:Property')"/> This resource is a property<span ng-if="!hasObjectResource('rdf:type', 'rdf:Property')">.</span>
+		<span ng-if="hasObjectResource('rdf:type', 'rdf:Property') || hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')"> that links individuals to
 			<span><input type="radio" ng-model="pType" ng-change="setPropertyType(pType)" value="object"/> other individuals  </span>
 			<span><input type="radio" ng-model="pType" ng-change="setPropertyType(pType)" value="data"/> simple values (boolean, date, number, text,...)</span> ?
 		</span>

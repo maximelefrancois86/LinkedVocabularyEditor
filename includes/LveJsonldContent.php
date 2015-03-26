@@ -4,6 +4,9 @@ namespace Lve;
 
 use ML\JsonLD\Document;
 use ML\JsonLD\JsonLD;
+use \ParserOptions;
+use \ParserOutput;
+use \Title;
 
 class JsonldContent extends \JsonContent {
 
@@ -106,57 +109,57 @@ class JsonldContent extends \JsonContent {
 		return JsonLD::getDocument($this->mText);
 	}
 
-	// /**
-	//  * Returns a ParserOutput object resulting from parsing the content's text
-	//  * using $wgParser.
-	//  *
-	//  * @param Title $title
-	//  * @param int $revId Revision to pass to the parser (default: null)
-	//  * @param ParserOptions $options (default: null)
-	//  * @param bool $generateHtml (default: true)
-	//  * @param ParserOutput &$output ParserOutput representing the HTML form of the text,
-	//  *           may be manipulated or replaced.
-	//  */
-	// protected function fillParserOutput(Title $title, $revId, ParserOptions $options, $generateHtml, ParserOutput &$output) {
-	// 	global $wgParser;
-	// 	$about = Resource::getByTitle($title);
+	/**
+	 * Returns a ParserOutput object resulting from parsing the content's text
+	 * using $wgParser.
+	 *
+	 * @param Title $title
+	 * @param int $revId Revision to pass to the parser (default: null)
+	 * @param ParserOptions $options (default: null)
+	 * @param bool $generateHtml (default: true)
+	 * @param ParserOutput &$output ParserOutput representing the HTML form of the text,
+	 *           may be manipulated or replaced.
+	 */
+	protected function fillParserOutput(Title $title, $revId, ParserOptions $options, $generateHtml, ParserOutput &$output) {
+		global $wgParser;
+		$about = Resource::getByTitle($title);
 
-	// 	// $msg = array();
+		// $msg = array();
 
-	// 	// $msg[] = "'''Description of resource " . $about->getPName() . "'''";
-	// 	// $msg[] = "URI: " . $about->getExtLink();
-	// 	// foreach ($graphs as $guri => $graph) {
-	// 	// 	$gextlink = Resource::get($guri)->getExtLink();
-	// 	// 	$msg[] = "== Assertions in graph " . $gextlink . "==";
-	// 	// 	$s = $graph->resource($about->getPName());
-	// 	// 	$props = $s->properties();
-	// 	// 	foreach ($props as $p) {
-	// 	// 		$msg[] = "* has " . Resource::get($p)->getWikilink() . ":";
-	// 	// 		foreach ($s->all($p) as $o) {
-	// 	// 			if ($o instanceof \EasyRdf\Resource) {
-	// 	// 				$msg[] = "** " . Resource::get($o)->getWikilink();
-	// 	// 			} elseif (null !== $o->getLang() && '' !== $o->getLang()) {
-	// 	// 				$msg[] = "** in language " . $o->getLang() . ": \"" . $o->__toString() . "\"";
-	// 	// 			} elseif (null !== $o->getDatatype() && '' !== $o->getDatatype()) {
-	// 	// 				$msg[] = "** \"" . $o->__toString() . "\", with type " . Resource::get($o->getDatatype())->getWikilink();
-	// 	// 			} else {
-	// 	// 				$msg[] = "** \"" . $o->__toString() . ".";
-	// 	// 			}
-	// 	// 		}
-	// 	// 	}
-	// 	// 	foreach ($s->reversePropertyUris() as $p) {
-	// 	// 		$msg[] = "* is the " . Resource::get($p)->getWikilink() . " of:";
-	// 	// 		foreach ($s->all("^" . \EasyRdf\RdfNamespace::shorten($p)) as $o) {
-	// 	// 			$msg[] = "** " . Resource::get($o)->getWikilink() . ".";
-	// 	// 		}
-	// 	// 	}
-	// 	// }
+		// $msg[] = "'''Description of resource " . $about->getPName() . "'''";
+		// $msg[] = "URI: " . $about->getExtLink();
+		// foreach ($graphs as $guri => $graph) {
+		// 	$gextlink = Resource::get($guri)->getExtLink();
+		// 	$msg[] = "== Assertions in graph " . $gextlink . "==";
+		// 	$s = $graph->resource($about->getPName());
+		// 	$props = $s->properties();
+		// 	foreach ($props as $p) {
+		// 		$msg[] = "* has " . Resource::get($p)->getWikilink() . ":";
+		// 		foreach ($s->all($p) as $o) {
+		// 			if ($o instanceof \EasyRdf\Resource) {
+		// 				$msg[] = "** " . Resource::get($o)->getWikilink();
+		// 			} elseif (null !== $o->getLang() && '' !== $o->getLang()) {
+		// 				$msg[] = "** in language " . $o->getLang() . ": \"" . $o->__toString() . "\"";
+		// 			} elseif (null !== $o->getDatatype() && '' !== $o->getDatatype()) {
+		// 				$msg[] = "** \"" . $o->__toString() . "\", with type " . Resource::get($o->getDatatype())->getWikilink();
+		// 			} else {
+		// 				$msg[] = "** \"" . $o->__toString() . ".";
+		// 			}
+		// 		}
+		// 	}
+		// 	foreach ($s->reversePropertyUris() as $p) {
+		// 		$msg[] = "* is the " . Resource::get($p)->getWikilink() . " of:";
+		// 		foreach ($s->all("^" . \EasyRdf\RdfNamespace::shorten($p)) as $o) {
+		// 			$msg[] = "** " . Resource::get($o)->getWikilink() . ".";
+		// 		}
+		// 	}
+		// }
 
-	// 	$text = "Click on 'Edit' to see the description of resource " . $about->getPName() . "\n\n";
-	// 	$text .= "<pre>" . $this->getNativeData() . "</pre>";
+		$text = "Click on 'Edit' to see the description of resource " . $about->getPName() . "\n\n";
+		$text .= "<pre>" . $this->getNativeData() . "</pre>";
 
-	// 	$output = $wgParser->parse($text, $title, $options, true, true, $revId);
+		$output = $wgParser->parse($text, $title, $options, true, true, $revId);
 
-	// }
+	}
 
 }

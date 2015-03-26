@@ -16,4 +16,5 @@ $specialPageAliases['en'] = array(
 	'AdminPage' => array('Admin_Page'),
 	'EditNamespaces' => array('Edit_Namespaces'),
 	'ImportVocabularies' => array('Import_Vocabularies'),
+	'GetJsonLDContext' => array('Get_Json-LD_Context'),
 );

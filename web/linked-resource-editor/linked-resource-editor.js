@@ -20,6 +20,7 @@ vreModule.controller('VEController', ['$scope', function($scope) {
 	$scope.isAClass = /[A-Z]/.test( $scope.fragment[0]);
 
 	$scope.prefix = $scope.about.substring(0,$scope.about.indexOf(":")); // the prefix of the resource
+	$scope.prefix = $scope.prefix.charAt(0).toLowerCase() + $scope.prefix.slice(1);
 	$scope.guri = namespaces[$scope.prefix]; // the uri of the graph that defines this resource
 	$scope.uri = $scope.guri + $scope.about.substring($scope.about.indexOf(":")+1); // the uri of the resource that is edited
 	$scope.jsonld = jsonld; // the list of graph objects [{"@graph"...},{"@graph"...},...]

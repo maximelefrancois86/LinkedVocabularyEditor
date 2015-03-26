@@ -26,53 +26,39 @@ class GetPage extends SpecialPage {
 		$output = $this->getOutput();
 		$request = $this->getRequest();
 
-		$prefix = $this->getRequest()->getText("vocabulary");
-		$accept = $this->getRequest()->getText("accept");
+		$this->prefix = $this->getRequest()->getText("vocabulary");
 
-		// echo getallheaders()['Accept'];
-		//		echo split(',', getallheaders()['Accept']);
+		$accept = $request->getAllHeaders()['ACCEPT'];
 
-		if ($accept === "ttl") {
-			$uri = RdfNamespace::namespaces()[$prefix];
-
-			$q = "CONSTRUCT { ?x ?p ?o } FROM <$uri> WHERE { ?x ?p ?o }";
-			$store = Arc2Store::getStore();
-			$rs = $store->query($q);
-
-			$conf = array('ns' => RdfNamespace::namespaces());
-
-			// $this->getOutput()->disable();
-			// Cancel output buffering and gzipping if set
-			// This should provide safer streaming for pages with history
-			// wfResetOutputBuffers();
-
-			$ser = \ARC2::getTurtleSerializer($conf);
-			$request->response()->header("Content-type: text/turtle; charset=utf-8");
-
-			echo $ser->getSerializedIndex($rs['result']);
-			exit;
-		} else if ($accept === "html") {
-			$this->getOutput()->disable();
-			wfResetOutputBuffers();
-			$msg = '<html><head>
-			<script>
-			i = window.location.href.lastIndexOf("/");
-			start = window.location.href.substring(0,i);
-			prefix = "' . $prefix . '";
-			fragment = window.location.hash.substring(1);
-
-			window.location.replace(start + "index.php?title=Resource:"+prefix+":"+fragment);
-
-			</script>
-			</head>
-			<body>redirection page</body></html>';
-			echo $msg;
-			exit;
+		if (strpos($accept, "text/turtle") !== false) {
+			$this->serveRdf("getTurtleSerializer", "text/turtle");
+		} else if (strpos($accept, "application/rdf+xml") !== false) {
+			$this->serveRdf("getRDFXMLSerializer", "application/rdf+xml");
+		} else if (strpos($accept, "application/n-triples") !== false) {
+			$this->serveRdf("getNTriplesSerializer", "application/n-triples");
 		} else {
-			$this->getOutput()->addWikitext("This is a redirection page. Use URL parameter 'vocabulary' ''v'' and a fragment ''f'' to redirect to [[Resource:v:f]].
-				For instance, [Special:GetResource?vocabulary=seas&accept=html#Class] redirects to [[Resource:rdfs:Class]]");
+			$this->getOutput()->disable();
+			$request->response()->header('Status: 303 See Also', false, 303);
+			$request->response()->header("Location: /index.php?title=Resource:" . ucfirst($this->prefix) . ":");
+			exit;
 		}
 
+	}
+
+	function serveRdf($parserName, $contentType) {
+		$output = $this->getOutput();
+		$request = $this->getRequest();
+		$uri = RdfNamespace::namespaces()[$this->prefix];
+		$q = "CONSTRUCT { ?x ?p ?o } FROM <$uri> WHERE { ?x ?p ?o }";
+		$store = Arc2Store::getStore();
+		$rs = $store->query($q);
+		$conf = array('ns' => RdfNamespace::namespaces());
+
+		$ser = \ARC2::$parserName($conf);
+		$request->response()->header("Content-type: $contentType; charset=utf-8");
+
+		echo $ser->getSerializedIndex($rs['result']);
+		exit;
 	}
 
 }

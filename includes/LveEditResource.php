@@ -21,7 +21,6 @@ class EditResource extends \EditPage {
 	public function __construct(Article $article) {
 		parent::__construct($article);
 		$this->mAbout = Resource::getByTitle($this->mTitle);
-
 	}
 
 	public static function onAlternateEdit(EditPage $editor) {
@@ -127,9 +126,10 @@ class EditResource extends \EditPage {
 		if ($title->getNamespace() != NS_RESOURCE) {
 			return true;
 		}
-		$t = lcfirst($title->getText());
+		$mAbout = Resource::getByTitle($title);
+		$t = $mAbout->getPName();
 
-		if (!preg_match('#^\w+(-\w+)*:(\w+(-\w+)*)?$#', $t)) {
+		if (!preg_match('#^\w+(-\w+)*:(\w+([-\_]\w+)*)?$#', $t)) {
 			return "Warning, the title of this page does not seems to be a correct prefixed name for a resource. Please use names such as 'Resource:prefix:fragment'";
 		}
 		list($prefix, $fragment) = explode(":", $t, 2);
@@ -211,12 +211,12 @@ class EditResource extends \EditPage {
 			$store->query("INSERT INTO <$graph> { $newN3 }");
 		}
 
-		$content = new \WikitextContent($text);
+		// $content = new \WikitextContent($text);
 
-		$title = \Title::newFromText("Test:" . $article->getTitle()->getText());
+		// $title = \Title::newFromText("Test:" . $article->getTitle()->getText());
 
-		$article = new Article($title);
-		$article->doEditContent($content, "updated graph.");
+		// $article = new Article($title);
+		// $article->doEditContent($content, "updated graph.");
 
 		return true;
 

@@ -10,6 +10,7 @@
     "editnamespaces": "View and Edit Namespaces",
     "importvocabularies": "Import/Export a Linked Vocabulary",
     "getresource": "Get a wikipage corresponding to a resource",
+    "getjsonldcontext": "Serves a JsonLD Context in json",
     "lve-setup-set": "Database is set up",
     "lve-setup-notset": "Database is '''not''' set up",
     "lve-setup-fresh": "Database is set up and ready to host Linked Vocabularies",

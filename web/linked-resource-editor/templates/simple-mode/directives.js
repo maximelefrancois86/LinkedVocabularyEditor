@@ -70,6 +70,12 @@ vreModule.directive('vreSimple', function() {
 					}
 				}
 			};
+			if($scope.hasObjectResource('rdf:type', 'owl:ObjectProperty')) {
+				$scope.pType = 'object';
+			} else if($scope.hasObjectResource('rdf:type', 'owl:DataProperty')) {
+				$scope.pType = 'data';
+			}
+
 		},
 		templateUrl: "extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/root.html",
 	};

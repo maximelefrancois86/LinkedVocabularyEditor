@@ -57,12 +57,24 @@ $wgMessagesDirs['Lve'] = $dir . 'i18n';
 $wgExtensionMessagesFiles['LveAlias'] = $dir . 'LinkedVocabularyEditor.alias.php'; # Location of an aliases file (Tell MediaWiki to load it)
 
 /**************************
- *  New namespace            *
+ *  New namespaces           *
  **************************/
 define("NS_RESOURCE", 1452); // This MUST be even.
 define("NS_RESOURCE_TALK", 1453); // This MUST be the following odd integer.
 $wgExtraNamespaces[NS_RESOURCE] = "Resource";
 $wgExtraNamespaces[NS_RESOURCE_TALK] = "Resource_talk";
+
+define("NS_CONTEXT", 1454);
+define("NS_CONTEXT_TALK", 1455);
+$wgExtraNamespaces[NS_CONTEXT] = "JsonLDContext";
+$wgExtraNamespaces[NS_CONTEXT_TALK] = "JsonLDContext_talk";
+$wgNamespaceContentModels[NS_RESOURCE] = CONTENT_MODEL_JSON;
+
+define("NS_SCHEMA", 1456);
+define("NS_SCHEMA_TALK", 1457);
+$wgExtraNamespaces[NS_SCHEMA] = "JsonSchema";
+$wgExtraNamespaces[NS_SCHEMA_TALK] = "JsonSchema_talk";
+$wgNamespaceContentModels[NS_RESOURCE] = CONTENT_MODEL_JSON;
 
 /**************************
  *  Include directory           *
@@ -91,6 +103,8 @@ $wgAutoloadClasses['Lve\ImportPage'] = $wgLveIncludes . 'SpecialLveImportPage.ph
 $wgSpecialPages['ImportVocabularies'] = 'Lve\ImportPage';
 $wgAutoloadClasses['Lve\GetPage'] = $wgLveIncludes . 'SpecialLveGetPage.php';
 $wgSpecialPages['GetResource'] = 'Lve\GetPage';
+$wgAutoloadClasses['Lve\GetJsonLDContextPage'] = $wgLveIncludes . 'SpecialLveGetJsonLDContext.php';
+$wgSpecialPages['GetJsonLDContext'] = 'Lve\GetJsonLDContextPage';
 
 /**************************
  *  Autoload classes      *

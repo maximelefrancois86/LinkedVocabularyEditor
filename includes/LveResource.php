@@ -74,6 +74,7 @@ class Resource {
 		if (substr($text, 0, 2) == "-:") {
 			return new self("_:" . substr($text, 2));
 		} else {
+			$text = preg_replace('/(\s)/', '_', lcfirst($text));
 			return new self(RdfNamespace::expand($text));
 		}
 	}
