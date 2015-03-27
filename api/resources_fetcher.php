@@ -7,8 +7,6 @@ require '../vendor/autoload.php';
 require '../includes/LveArc2Store.php';
 error_reporting(E_ALL^E_DEPRECATED);
 
-$wgDBprefix = "ws";
-
 $wgARC2StoreConfig = array(
 	'db_host' => $wgDBserver,
 	'db_name' => $wgDBname,

@@ -434,7 +434,7 @@ selectClassFn = function(ngDialog, callback) {
 			query = [
 				"Prefix dc: <http://purl.org/dc/elements/1.1/> .",
 				"SELECT ?s ?label ?comment WHERE {",
-				"{ ?s a rdfs:Class }",
+				"{ ?s a rdfs:Class } UNION { ?s a owl:Class }",
 				"OPTIONAL {?s rdfs:label ?label}",
 				"OPTIONAL {?s rdfs:comment ?comment}",
 				"} GROUP BY ?s"
