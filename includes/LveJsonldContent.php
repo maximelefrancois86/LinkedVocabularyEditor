@@ -2,6 +2,7 @@
 
 namespace Lve;
 
+use EasyRdf\RdfNamespace;
 use ML\JsonLD\Document;
 use ML\JsonLD\JsonLD;
 use \ParserOptions;
@@ -121,44 +122,182 @@ class JsonldContent extends \JsonContent {
 	 *           may be manipulated or replaced.
 	 */
 	protected function fillParserOutput(Title $title, $revId, ParserOptions $options, $generateHtml, ParserOutput &$output) {
-		global $wgParser;
-		$about = Resource::getByTitle($title);
+		global $wgParser, $wgScriptPath;
+		$this->about = Resource::getByTitle($title);
 
-		// $msg = array();
+		$text = "";
+		$text .= "__NOTOC__ __NOEDITSECTION__\n";
+		$text .= "===IRI===\n\n";
+		$text .= $this->about->getUri() . "\n\n";
+		$text .= "===Other visualisation===\n\n";
+		$url = $this->about->getUri();
+		$url2 = $title->getFullUrl();
 
-		// $msg[] = "'''Description of resource " . $about->getPName() . "'''";
-		// $msg[] = "URI: " . $about->getExtLink();
-		// foreach ($graphs as $guri => $graph) {
-		// 	$gextlink = Resource::get($guri)->getExtLink();
-		// 	$msg[] = "== Assertions in graph " . $gextlink . "==";
-		// 	$s = $graph->resource($about->getPName());
-		// 	$props = $s->properties();
-		// 	foreach ($props as $p) {
-		// 		$msg[] = "* has " . Resource::get($p)->getWikilink() . ":";
-		// 		foreach ($s->all($p) as $o) {
-		// 			if ($o instanceof \EasyRdf\Resource) {
-		// 				$msg[] = "** " . Resource::get($o)->getWikilink();
-		// 			} elseif (null !== $o->getLang() && '' !== $o->getLang()) {
-		// 				$msg[] = "** in language " . $o->getLang() . ": \"" . $o->__toString() . "\"";
-		// 			} elseif (null !== $o->getDatatype() && '' !== $o->getDatatype()) {
-		// 				$msg[] = "** \"" . $o->__toString() . "\", with type " . Resource::get($o->getDatatype())->getWikilink();
-		// 			} else {
-		// 				$msg[] = "** \"" . $o->__toString() . ".";
-		// 			}
-		// 		}
-		// 	}
-		// 	foreach ($s->reversePropertyUris() as $p) {
-		// 		$msg[] = "* is the " . Resource::get($p)->getWikilink() . " of:";
-		// 		foreach ($s->all("^" . \EasyRdf\RdfNamespace::shorten($p)) as $o) {
-		// 			$msg[] = "** " . Resource::get($o)->getWikilink() . ".";
-		// 		}
-		// 	}
-		// }
+		if (strpos($url2, "?title=") !== false) {
+			$sep = "&";
+		} else {
+			$sep = "?";
+		}
 
-		$text = "Click on 'Edit' to see the description of resource " . $about->getPName() . "\n\n";
-		$text .= "<pre>" . $this->getNativeData() . "</pre>";
+		$urlrdf = substr($url2, 0, strrpos($url2, ":") + 1) . $sep . 'accept=application/rdf%2bxml#' . substr($url2, strrpos($url2, ":") + 1);
+		$urlttl = substr($url2, 0, strrpos($url2, ":") + 1) . $sep . 'accept=text/turtle#' . substr($url2, strrpos($url2, ":") + 1);
+		$urln3 = substr($url2, 0, strrpos($url2, ":") + 1) . $sep . 'accept=application/n-triples#' . substr($url2, strrpos($url2, ":") + 1);
+		$text .= "Ontology source ([$urlrdf application/rdf+xml], [$urlttl application/turtle], [$urln3 application/n-triples])\n\n";
+
+		if (strlen($url2) === strrpos($url2, ":") + 1) {
+			$this->fillAsOntology($text);
+		} else {
+			$this->fillAsResource($text);
+		}
 
 		$output = $wgParser->parse($text, $title, $options, true, true, $revId);
+
+		// $output->addOutputHook(function ($output) {$output->addHTML("<h3>Source</h3><summary><details>Wikipage content as Json-LD<details><pre>" . $this->getNativeData() . "</pre></summary");});
+
+	}
+
+	protected function fillAsOntology(&$text) {
+		$guri = $this->about->getUri();
+		$this->fillValues($text, "Title", "http://purl.org/dc/terms/title");
+		$this->fillValues($text, "Abstract", "http://purl.org/dc/terms/description");
+		$this->fillValues($text, "Version Info", "http://www.w3.org/2002/07/owl#versionInfo");
+		$this->fillValues($text, "Comment", "http://www.w3.org/2000/01/rdf-schema#comment");
+		$this->fillResources($text, "License", "http://creativecommons.org/ns#license");
+		$this->fillResourcesType($text, "Ontology Classes", "http://www.w3.org/2002/07/owl#Class");
+		$this->fillResourcesType($text, "Ontology Object Properties", "http://www.w3.org/2002/07/owl#ObjectProperty");
+		$this->fillResourcesType($text, "Ontology Data Properties", "http://www.w3.org/2002/07/owl#DataProperty");
+		$this->fillResourcesType($text, "Other Classes", "http://www.w3.org/2000/01/rdf-schema#Class");
+		$this->fillResourcesType($text, "Other Properties", "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
+
+	}
+
+	protected function fillResourcesType(&$text, $type, $turi) {
+		$guri = $this->about->getUri();
+		$q = "SELECT DISTINCT ?x FROM <$guri> WHERE {
+			?x a <$turi> .
+		} ORDER BY ?x";
+		$rs = \Lve\Arc2Store::getStore()->query($q);
+		if (count($rs['result']['rows']) >= 1) {
+			$text .= "==$type==\n\n";
+		}
+		foreach ($rs['result']['rows'] as $row) {
+			$r = Resource::get($row['x']);
+			if ($r->isBNode()) {
+				continue;
+			}
+			$rfragment = $r->getFragment();
+			$rfull = $r->getTitle();
+			$rpname = $r->getPName();
+			$ruri = $r->getUri();
+
+			$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
+				<$ruri> <http://www.w3.org/2000/01/rdf-schema#comment> ?o .
+			} ORDER BY ?o";
+			$rs = \Lve\Arc2Store::getStore()->query($q);
+			$rcomment = (count($rs['result']['rows']) >= 1) ? " - " . $rs['result']['rows'][0]['o'] : "";
+
+			$text .= "* <span id='$rfragment'>[[$rfull|$rpname]] $rcomment </span>\n";
+		}
+
+	}
+
+	protected function fillResources(&$text, $title, $puri) {
+		$uri = $this->about->getUri();
+		$pname = $this->about->getPName();
+		$guri = Resource::get(substr($pname, 0, strpos($pname, ":") + 1))->getUri();
+
+		$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
+			<$uri> <$puri> ?o .
+		} ORDER BY ?o";
+		$rs = \Lve\Arc2Store::getStore()->query($q);
+
+		if (count($rs['result']['rows']) >= 1) {
+			$text .= "===$title===\n\n";
+		}
+		foreach ($rs['result']['rows'] as $row) {
+			$this->printResource($text, Resource::get($row['o']));
+		}
+	}
+
+	protected function fillResourcesReverse(&$text, $title, $puri) {
+		$uri = $this->about->getUri();
+		$pname = $this->about->getPName();
+		$guri = Resource::get(substr($pname, 0, strpos($pname, ":") + 1))->getUri();
+
+		$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
+			?o <$puri> <$uri> .
+		} ORDER BY ?o";
+		$rs = \Lve\Arc2Store::getStore()->query($q);
+
+		if (count($rs['result']['rows']) >= 1) {
+			$text .= "===$title===\n\n";
+		}
+		foreach ($rs['result']['rows'] as $row) {
+			$this->printResource($text, Resource::get($row['o']));
+		}
+	}
+
+	protected function printResource(&$text, $r) {
+		if ($r->isBNode()) {
+			return;
+		}
+		$rfragment = $r->getFragment();
+		$rfull = $r->getTitle();
+		$rpname = $r->getPName();
+		$ruri = $r->getUri();
+
+		$q = "SELECT DISTINCT ?o WHERE {
+			<$ruri> <http://www.w3.org/2000/01/rdf-schema#comment> ?o .
+		} ORDER BY ?o";
+		$rs = \Lve\Arc2Store::getStore()->query($q);
+		$rcomment = (count($rs['result']['rows']) >= 1) ? " - " . $rs['result']['rows'][0]['o'] : "";
+
+		if (strpos($rpname, "ns") === 0) {
+			$rpname = $ruri;
+		}
+		$text .= "* <span id='$rfragment'>[$ruri $rpname] $rcomment </span>\n";
+	}
+
+	protected function fillAsResource(&$text) {
+		$this->fillValues($text, "Human-readable names", "http://www.w3.org/2000/01/rdf-schema#label");
+		$this->fillResources($text, "Types", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+		$this->fillValues($text, "Human-readable descriptions", "http://www.w3.org/2000/01/rdf-schema#comment");
+		$this->fillValues($text, "Term status", "http://www.w3.org/2003/06/sw-vocab-status/ns#term_status");
+		$this->fillValues($text, "Additional informations", "http://www.w3.org/2003/06/sw-vocab-status/ns#moreinfos");
+
+		$this->fillResources($text, "Direct super classes", "http://www.w3.org/2000/01/rdf-schema#subClassOf");
+		$this->fillResources($text, "Equivalent classes", "http://www.w3.org/2002/07/owl#equivalentClass");
+		$this->fillResources($text, "Disjoint classes", "http://www.w3.org/2002/07/owl#disjointWith");
+		$this->fillResourcesReverse($text, "Domain Of", "http://www.w3.org/2000/01/rdf-schema#domain");
+		$this->fillResourcesReverse($text, "Range Of", "http://www.w3.org/2000/01/rdf-schema#range");
+
+		$this->fillResources($text, "Direct super properties", "http://www.w3.org/2000/01/rdf-schema#subPropertyOf");
+		$this->fillResources($text, "Known domains", "http://www.w3.org/2000/01/rdf-schema#domain");
+		$this->fillResources($text, "Known ranges", "http://www.w3.org/2000/01/rdf-schema#range");
+		$this->fillResources($text, "Known equivalent properties", "http://www.w3.org/2002/07/owl#equivalentProperty");
+		$this->fillResources($text, "Known disjoint properties", "http://www.w3.org/2002/07/owl#propertyDisjointWith");
+		$this->fillResources($text, "Known inverse properties", "http://www.w3.org/2002/07/owl#inverseOf");
+
+	}
+
+	protected function fillValues(&$text, $title, $puri) {
+		$uri = $this->about->getUri();
+		$pname = $this->about->getPName();
+		$guri = Resource::get(substr($pname, 0, strpos($pname, ":") + 1))->getUri();
+
+		$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
+			<$uri> <$puri> ?o .
+		} ORDER BY ?o";
+		$rs = \Lve\Arc2Store::getStore()->query($q);
+
+		if (count($rs['result']['rows']) >= 1) {
+			$text .= "===$title===\n\n";
+		}
+		foreach ($rs['result']['rows'] as $row) {
+			$olang = isset($row['o lang']) ? " (a rdf:langString, @" . $row['o lang'] . ")" : "";
+			$odatatype = isset($row['o datatype']) ? " (a " . RdfNamespace::shorten($row['o datatype']) . ")" : "";
+			$text .= "* " . $row['o'] . $olang . $odatatype . "\n";
+		}
 
 	}
 

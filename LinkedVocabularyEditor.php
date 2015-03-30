@@ -101,8 +101,6 @@ $wgAutoloadClasses['Lve\NamespacesPage'] = $wgLveIncludes . 'SpecialLveNamespace
 $wgSpecialPages['EditNamespaces'] = 'Lve\NamespacesPage';
 $wgAutoloadClasses['Lve\ImportPage'] = $wgLveIncludes . 'SpecialLveImportPage.php';
 $wgSpecialPages['ImportVocabularies'] = 'Lve\ImportPage';
-$wgAutoloadClasses['Lve\GetPage'] = $wgLveIncludes . 'SpecialLveGetPage.php';
-$wgSpecialPages['GetResource'] = 'Lve\GetPage';
 $wgAutoloadClasses['Lve\GetJsonLDContextPage'] = $wgLveIncludes . 'SpecialLveGetJsonLDContext.php';
 $wgSpecialPages['GetJsonLDContext'] = 'Lve\GetJsonLDContextPage';
 
@@ -112,7 +110,6 @@ $wgSpecialPages['GetJsonLDContext'] = 'Lve\GetJsonLDContextPage';
 $wgAutoloadClasses['Lve\Arc2Store'] = $wgLveIncludes . 'LveArc2Store.php';
 $wgAutoloadClasses['Lve\TitleUtil'] = $wgLveIncludes . 'LveTitleUtil.php';
 $wgAutoloadClasses['Lve\Resource'] = $wgLveIncludes . 'LveResource.php';
-// $wgAutoloadClasses['Lexicalizer'] = $wgLveIncludes . 'Lexicalizer.php';
 $wgAutoloadClasses['Lve\EditResource'] = $wgLveIncludes . 'LveEditResource.php';
 
 /**************************
@@ -132,6 +129,12 @@ $wgHooks['AlternateEdit'][] = "Lve\EditResource::onAlternateEdit";
 $wgHooks['EditPage::showEditForm:fields'][] = "Lve\EditResource::showEditFormFields";
 $wgHooks['EditFormPreloadText'][] = 'Lve\EditResource::onEditFormPreloadText';
 $wgHooks['PageContentSaveComplete'][] = 'Lve\EditResource::onPageContentSaveComplete';
+
+/**************************
+ *  New Action            *
+ **************************/
+$wgAutoloadClasses['ViewRdfAction'] = $wgLveIncludes . 'LveViewRdfAction.php';
+$wgActions['view'] = "ViewRdfAction";
 
 // $wgHooks['EditFilterMergedContent'][] = 'VEHooksClass::onEditFilterMergedContent';
 

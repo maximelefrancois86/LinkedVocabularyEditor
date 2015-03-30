@@ -37,6 +37,7 @@ class GetJsonLDContextPage extends SpecialPage {
 			if ($content !== null) {
 				// $this->getOutput()->disable();
 				// wfResetOutputBuffers();
+				// $request->response()
 				$request->response()->header("Content-type: application/json; charset=utf-8");
 				echo $content;
 				exit;

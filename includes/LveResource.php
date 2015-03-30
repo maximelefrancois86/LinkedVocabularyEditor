@@ -24,11 +24,23 @@ class Resource {
 		}
 	}
 
+	function isBNode() {
+		return $this->bnode;
+	}
+
 	function getUri() {
 		if ($this->bnode) {
 			return "_:" . $this->bnodeid;
 		} else {
 			return $this->uri;
+		}
+	}
+
+	function getFragment() {
+		if ($this->bnode) {
+			return $this->bnodeid;
+		} else {
+			return substr($this->pname, strpos($this->pname, ":") + 1);
 		}
 	}
 

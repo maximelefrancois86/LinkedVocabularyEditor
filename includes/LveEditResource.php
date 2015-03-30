@@ -94,7 +94,7 @@ class EditResource extends \EditPage {
 				});
 
 				$(document).ready(function() {
-					// $("#wpTextbox1").hide();
+					$("#wpTextbox1").hide();
 					$("#toolbar").hide();
 					editForm = document.getElementById("editform").setAttribute("ng-controller", "VEController");
 					jsonld.expand(JSON.parse($("#wpTextbox1").text()), function(err, expanded) {
