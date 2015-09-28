@@ -138,47 +138,39 @@ class JsonldContent extends \JsonContent {
 
 		// Resource creation form
 		$wgOut->addinlineScript('
-			var namespaces = ' . json_encode(RdfNamespace::namespaces()) . ';
-			var wikiurl = ' . json_encode(Resource::getByTitle($title)->getUri()) . ';
-			$( document ).ready(function() {
-				$("#catlinks").next().after( "<div class=\'catlinks\' id=\'create\'><label>Create new resource:</label><select/><input size=12/> <a></a></div>");
-				var input = $("#create input");
-				var select = $("#create select");
-				var a = $("#create a");
+			var pname = ' . json_encode($this->about->getPName()) . ';
+			if(pname.startsWith("seas")) {
+				var wikiurl = ' . json_encode(Resource::getByTitle($title)->getUri()) . ';
+				$( document ).ready(function() {
+					$("#catlinks").before().after( "<div class=\'catlinks\' id=\'create\'><label>Create a new resource in this module:</label> <input size=12/> <a target=\'_blank\'></a></div>");
+					var input = $("#create input");
+					var a = $("#create a");
 
-				var prefixes = [];
-				for (var prefix in namespaces) {
-				  if (namespaces.hasOwnProperty(prefix)) {
-				  	prefixes.push(prefix);
-				  }
-				}
-				prefixes.sort();
-				for(var i in prefixes) {
-					var prefix = prefixes[i] ;
-					var Prefix = prefix.charAt(0).toUpperCase() + prefix.slice(1) ;
-					if(prefix=="Seas") {
-				    	select.append("<option value=\'"+Prefix+"\' selected>"+prefix+"</option>");
-					} else {
-				    	select.append("<option value=\'"+Prefix+"\'>"+prefix+"</option>");
-					}
-				}
-				var updateFunc = function() {
-					var nsprefix = select.val();
-					var value = input.val();
-					a.attr("href","../index.php?title=Resource:"+nsprefix+":"+value+"&action=edit");
-					a.text("Create wiki page Resource:"+nsprefix+":"+value);
-				};
-				$("#create input").keyup(updateFunc);
-				$("#create select").change(updateFunc);
-				updateFunc();
-			});
+					var Pname = pname.charAt(0).toUpperCase() + pname.slice(1) ;
+
+					var updateFunc = function() {
+						var value = input.val();
+						a.attr("href","../index.php?title=Resource:"+Pname+value+"&action=edit");
+						a.text("Create wiki page Resource:"+Pname+value);
+					};
+					$("#create input").keyup(updateFunc);
+					updateFunc();
+				});
+			}
 		');
 
 		$text = "__NOTOC__ __NOEDITSECTION__\n";
 
+		$uri = $this->about->getUri();
+		$pname = $this->about->getPName();
+		$wuri = $title->getFullUrl();
+		$urlwiki = substr($wuri, 0, strrpos($wuri, ":") + 1);
+		$localName = substr($wuri, strrpos($wuri, ":") + 1);
+		$sep = ((strpos($wuri, "?title=") !== false)) ? "&" : "?";
+
 		$wgOut->addinlineScript('
 			$( document ).ready(function() {
-				$(".ontoview").first().before( "<div  class=\'catlinks\'><label for=\'view\'>View definition in graph:</label><select id=\'view\'/></div>\n");
+				$(".ontoview").first().before( "<div  class=\'catlinks\'><label for=\'view\'>View description of resource <strong>' . $pname . '</strong> in graph:</label><select id=\'view\'/></div>\n");
 				$(".ontoview").each(function(index){
 					$("#view").append("<option value=\'"+$( this ).attr("id")+"\'>"+$( this ).attr("id")+"</option>");
 				});
@@ -202,24 +194,15 @@ class JsonldContent extends \JsonContent {
 			$onto = Resource::get($guri)->getPName();
 			$gwuri = Resource::get($guri)->getTitle()->getFullUrl();
 
-			$uri = $this->about->getUri();
-			$pname = $this->about->getPName();
-			$wuri = $title->getFullUrl();
-			$urlwiki = substr($wuri, 0, strrpos($wuri, ":") + 1);
 			$gurlwiki = substr($gwuri, 0, strrpos($gwuri, ":") + 1);
 
-			$localName = substr($wuri, strrpos($wuri, ":") + 1);
-			$sep = ((strpos($wuri, "?title=") !== false)) ? "&" : "?";
 			$gurlrdf = $gurlwiki . $sep . 'accept=application/rdf%2bxml';
 			$gurlttl = $gurlwiki . $sep . 'accept=text/turtle#';
 			$gurln3 = $gurlwiki . $sep . 'accept=application/n-triples#';
 
 			$text .= "<div class='ontoview' id='$onto'>\n";
-			$text .= "===Description of $pname in graph $onto===\n\n";
-			$text .= "* Resource IRI: $uri\n";
-			$text .= "* Graph IRI: $guri\n";
-			$text .= "* Graph [[Resource:$onto|wiki page]]\n";
-			$text .= "* Graph Sources: ([$gurlrdf application/rdf+xml], [$gurlttl application/turtle], [$gurln3 application/n-triples])\n";
+			$text .= "<span style='color:DarkGray'>Extended Resource URI: <$uri></span>\n\n";
+			$text .= "<span style='color:DarkGray'>Sources of the graph: [$gurlrdf application/rdf+xml], [$gurlttl application/turtle], [$gurln3 application/n-triples]</span>\n";
 			if (strlen($wuri) === strrpos($wuri, ":") + 1) {
 				$this->fillAsOntology($guri, $onto, $text);
 			} else {
@@ -235,19 +218,19 @@ class JsonldContent extends \JsonContent {
 		$uri = $this->about->getUri();
 
 		$text .= "[[Category:Ontology]]\n\n";
-		$text .= "===List of resources===\n\n";
-		$text .= "* [[:Category:Resources in $onto|Resources]]\n";
-		$text .= "* [[:Category:Classes in $onto|Classes]]\n";
-		$text .= "* [[:Category:Properties in $onto|Properties]]\n";
-		$text .= "* [[:Category:OWL Classes in $onto|OWL Classes]]\n";
-		$text .= "* [[:Category:OWL Object Properties in $onto|OWL Object Properties]]\n";
-		$text .= "* [[:Category:OWL Data Properties in $onto|OWL Data Properties]]\n";
 
 		$this->fillValues($guri, $onto, $text, "Title", "http://purl.org/dc/terms/title");
 		$this->fillValues($guri, $onto, $text, "Abstract", "http://purl.org/dc/terms/description");
 		$this->fillValues($guri, $onto, $text, "Version Info", "http://www.w3.org/2002/07/owl#versionInfo");
 		$this->fillValues($guri, $onto, $text, "Comment", "http://www.w3.org/2000/01/rdf-schema#comment");
 		$this->fillResources($guri, $onto, $text, "License", "http://creativecommons.org/ns#license");
+		$text .= "===List of resources===\n\n";
+		$text .= "You can browse [[:Category:Resources in $onto|Resources in $onto]], ";
+		$text .= "[[:Category:Classes in $onto|Classes]], ";
+		$text .= "[[:Category:Properties in $onto|Properties]], ";
+		$text .= "[[:Category:OWL Classes in $onto|OWL Classes]], ";
+		$text .= "[[:Category:OWL Object Properties in $onto|OWL Object Properties]], ";
+		$text .= "[[:Category:OWL Data Properties in $onto|OWL Data Properties]].\n";
 		$this->fillResourcesType($guri, $onto, $text, "Ontology Classes", "http://www.w3.org/2002/07/owl#Class");
 		$this->fillResourcesType($guri, $onto, $text, "Ontology Object Properties", "http://www.w3.org/2002/07/owl#ObjectProperty");
 		$this->fillResourcesType($guri, $onto, $text, "Ontology Data Properties", "http://www.w3.org/2002/07/owl#DataProperty");

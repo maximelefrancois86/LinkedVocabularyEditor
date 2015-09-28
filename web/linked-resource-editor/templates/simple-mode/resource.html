@@ -1,28 +1,36 @@
+<em>Please discuss your understanding of the resource in the discussion page.</em>
+
 <fieldset>
-	<legend>
-		<strong>What kind of resource is <code>{{about}}</code> ?</strong>
-	</legend>
 
-	<p ng-if="isAClass"><strong>The fragment of the URI begins with an upper-case letter. By convention, it SHOULD be a class.</strong></p>
-	<p ng-if="!isAClass"><strong>The fragment of the URI begins with a lower-case letter. By convention, it SHOULD be a property or an individual.</strong></p>
-
+	<p ng-if="isAClass"><strong style="color:red">The fragment of the URI begins with an upper-case letter. By convention, it SHOULD be a class.</strong></p>
 	<p>
-		<input type="checkbox" ng-checked="isClass()" ng-click="toggleClass()"/> This resource is a class.
+		<input type="checkbox" ng-checked="isClass()" ng-click="toggleClass()"/> Is this resource a Class ?  
+		<span style="color:DarkGrey"> - A class contains multiple individuals for instance the class <strong>kitchen:Fridge</strong> contains <strong>my:fridge045</strong>, <strong>your:fridge2134</strong>, <strong>his:fridge24</strong>, etc.</span> 
 		- <a href="http://www.w3.org/TR/owl2-syntax/#Classes" target="_blank">[?]</a>
 	</p>
+
+	<p ng-if="!isAClass"><strong style="color:red">The fragment of the URI begins with a lower-case letter. By convention, it SHOULD be a property or an individual.</strong></p>
 	<p>
-		<input type="checkbox" ng-checked="hasObjectResource('rdf:type', 'rdf:Property') || hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')" ng-click="toggleObjectResource('rdf:type', 'rdf:Property')"/> This resource is a property<span ng-if="!hasObjectResource('rdf:type', 'rdf:Property')">.</span>
-		<span ng-if="hasObjectResource('rdf:type', 'rdf:Property') || hasObjectResource('rdf:type', 'owl:ObjectProperty') || hasObjectResource('rdf:type', 'owl:DataProperty')"> that links individuals to
-			<span><input type="radio" ng-model="pType" ng-change="setPropertyType(pType)" value="object"/> other individuals  </span>
-			<span><input type="radio" ng-model="pType" ng-change="setPropertyType(pType)" value="data"/> simple values (boolean, date, number, text,...)</span> ?
-		</span>
+		<input type="checkbox" ng-checked="hasObjectResource('rdf:type', 'rdf:Property')" ng-click="toggleObjectResource('rdf:type', 'rdf:Property')"/> Is this resource a RDF property ? 
+		<span style="color:DarkGrey"> - A RDFS property is a property in lightweight ontologies. It may link any resource to any resource. </span>
+		- <a href="http://www.w3.org/TR/rdf-schema/#ch_property" target="_blank">[?]</a>
+		<p>
+			<input type="radio" ng-model="pType" ng-change="setPropertyType(pType)" value="object"/> Is this resource a OWL object property ?
+			<span style="color:DarkGrey"> - A OWL object property links individuals, for instance the object property <strong>kitchen:contains</strong> links <strong>my:fridge045</strong> to <strong>my:tomato234</strong>, <strong>your:fridge</strong> to <strong>your:lettuce123</strong>, etc.</span>
+			- <a href="http://www.w3.org/TR/owl2-syntax/#Object_Properties" target="_blank">[?]</a>
+		</p>
+		<p>
+			<input type="radio" ng-model="pType" ng-change="setPropertyType(pType)" value="data"/> Is this resource a OWL data property ?
+			<span style="color:DarkGrey"> - A OWL data property links individuals to simple values (boolean, date, number, text,...), for instance the data property <strong>kitchen:eggs</strong> links <strong>my:fridge045</strong> to <strong>12</strong>, <strong>your:fridge</strong> to <strong>4</strong>, etc.</span>
+			- <a href="http://www.w3.org/TR/owl2-syntax/#Data_Properties" target="_blank">[?]</a>
+		</p>
 	</p>
 </fieldset>
 
 
 <fieldset>
 	<legend>
-		<strong>Provide human-readable names for <code>{{about}}</code></strong>
+		<strong>Provide names for <code>{{about}}</code></strong>
 		- <a href="http://www.w3.org/TR/rdf-schema/#ch_label" target="_blank">[?]</a>
 	</legend>
 	<vre-lang-strings ppname="rdfs:label"></vre-lang-strings>
@@ -30,7 +38,7 @@
 
 <fieldset>
 	<legend>
-		<strong>Provide human-readable descriptions for <code>{{about}}</code></strong>
+		<strong>Provide documentation for <code>{{about}}</code></strong>
 		- <a href="http://www.w3.org/TR/rdf-schema/#ch_comment" target="_blank">[?]</a>
 	</legend>
 	<vre-lang-string-areas ppname="rdfs:comment"></vre-lang-string-areas>
@@ -38,25 +46,15 @@
 
 <fieldset ng-controller="VreVSTermStatus">
 	<legend>
-		<strong>term status</strong>
-		- <em>the status of a vocabulary term, expressed as a short symbolic string; known values include 'unstable','testing', 'stable' and 'archaic'</em>
+		<strong>Status of the Resource</strong>
 	</legend>
 	<div ng-if="!hasProperty('vs:term_status')"><a ng-click="addStatus()">[add term status]</a></div>
 	<div ng-if="hasProperty('vs:term_status')">
-		<span><input type="radio" ng-model="termStatus['@value']" value="unstable"/>Unstable</span>
-		<span><input type="radio" ng-model="termStatus['@value']" value="testing"/>Testing</span>
-		<span><input type="radio" ng-model="termStatus['@value']" value="stable"/>Stable</span>
-		<span><input type="radio" ng-model="termStatus['@value']" value="archaic"/>Archaic</span>
+		<p><input type="radio" ng-model="termStatus['@value']" value="unstable"/>Unstable <span style="color:DarkGrey">- The resource has just been introduced, it is under discussion.</span></p>
+		<p><input type="radio" ng-model="termStatus['@value']" value="testing"/>Testing <span style="color:DarkGrey">- The resource is tested in at least one implementation.</span></p>
+		<p><input type="radio" ng-model="termStatus['@value']" value="stable"/>Stable <span style="color:DarkGrey">- The resource has been extensively tested.</span></p>
+		<p><input type="radio" ng-model="termStatus['@value']" value="archaic"/>Archaic <span style="color:DarkGrey">- The resource is candidate for deletion in the next version of the ontology.</span></p>
 	</div>
-</fieldset>
-
-<fieldset ng-controller="VreVSMoreinfo">
-	<legend>
-		<strong>moreinfo</strong>
-		- <em>Describe here your understanding of the term, at the attention of knowledge engineers.</em>
-	</legend>
-	<div ng-if="!hasProperty('vs:moreinfos')"><a ng-click="addInfos()">[add term infos]</a></div>
-	<div ng-if="hasProperty('vs:moreinfos')"><textarea rows="7" cols="30" ng-model="moreinfos['@value']"></textarea></div>
 </fieldset>
 
 
