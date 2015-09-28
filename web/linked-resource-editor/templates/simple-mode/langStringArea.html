@@ -1,0 +1,6 @@
+<div>
+	<textarea rows="7" cols="30" required ng-model="object['@value']"></textarea>
+	<span ng-if="!isLangString()"><a ng-click="setLanguage()">[Specify language]</a></span>
+	<span ng-if="isLangString()"> with language <select ng-model="object['@language']" ng-options="lang as getLabel(lang, value.nativeName) for (lang, value) in languages"/></span>
+	<span><a ng-click="delete()">[delete literal]</a></span>
+</div>

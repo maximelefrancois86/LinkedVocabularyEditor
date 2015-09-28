@@ -17,9 +17,9 @@ class Resource {
 			$this->bnodeid = substr($uri, 2);
 		} elseif (preg_match("#://#", $uri)) {
 			$this->uri = $uri;
-			$this->pname = RdfNamespace::shorten($uri, true);
+			$this->pname = rawurldecode(RdfNamespace::shorten($uri, true));
 		} else {
-			$this->pname = $uri;
+			$this->pname = rawurldecode($uri);
 			$this->uri = RdfNamespace::expand($uri);
 		}
 	}

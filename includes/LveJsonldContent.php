@@ -5,6 +5,7 @@ namespace Lve;
 use EasyRdf\RdfNamespace;
 use ML\JsonLD\Document;
 use ML\JsonLD\JsonLD;
+use \HTML;
 use \ParserOptions;
 use \ParserOutput;
 use \Title;
@@ -125,54 +126,137 @@ class JsonldContent extends \JsonContent {
 		global $wgParser, $wgScriptPath;
 		$this->about = Resource::getByTitle($title);
 
-		$text = "";
-		$text .= "__NOTOC__ __NOEDITSECTION__\n";
-		$text .= "===IRI===\n\n";
-		$text .= $this->about->getUri() . "\n\n";
-		$text .= "===Other visualisation===\n\n";
-		$url = $this->about->getUri();
-		$url2 = $title->getFullUrl();
+		global $wgOut;
+		$wgOut->addHTML("
+			<!--
+			    IE8 support, see AngularJS Internet Explorer Compatibility http://docs.angularjs.org/guide/ie
+			    For Firefox 3.6, you will also need to include jQuery and ECMAScript 5 shim
+			  -->
+			<!--[if lt IE 9]>
+		    <script src='http://cdnjs.cloudflare.com/ajax/libs/es5-shim/2.2.0/es5-shim.js'></script>
+		  <![endif]-->");
 
-		if (strpos($url2, "?title=") !== false) {
-			$sep = "&";
-		} else {
-			$sep = "?";
-		}
+		// Resource creation form
+		$wgOut->addinlineScript('
+			var namespaces = ' . json_encode(RdfNamespace::namespaces()) . ';
+			var wikiurl = ' . json_encode(Resource::getByTitle($title)->getUri()) . ';
+			$( document ).ready(function() {
+				$("#catlinks").next().after( "<div class=\'catlinks\' id=\'create\'><label>Create new resource:</label><select/><input size=12/> <a></a></div>");
+				var input = $("#create input");
+				var select = $("#create select");
+				var a = $("#create a");
 
-		$urlrdf = substr($url2, 0, strrpos($url2, ":") + 1) . $sep . 'accept=application/rdf%2bxml#' . substr($url2, strrpos($url2, ":") + 1);
-		$urlttl = substr($url2, 0, strrpos($url2, ":") + 1) . $sep . 'accept=text/turtle#' . substr($url2, strrpos($url2, ":") + 1);
-		$urln3 = substr($url2, 0, strrpos($url2, ":") + 1) . $sep . 'accept=application/n-triples#' . substr($url2, strrpos($url2, ":") + 1);
-		$text .= "Ontology source ([$urlrdf application/rdf+xml], [$urlttl application/turtle], [$urln3 application/n-triples])\n\n";
+				var prefixes = [];
+				for (var prefix in namespaces) {
+				  if (namespaces.hasOwnProperty(prefix)) {
+				  	prefixes.push(prefix);
+				  }
+				}
+				prefixes.sort();
+				for(var i in prefixes) {
+					var prefix = prefixes[i] ;
+					var Prefix = prefix.charAt(0).toUpperCase() + prefix.slice(1) ;
+					if(prefix=="Seas") {
+				    	select.append("<option value=\'"+Prefix+"\' selected>"+prefix+"</option>");
+					} else {
+				    	select.append("<option value=\'"+Prefix+"\'>"+prefix+"</option>");
+					}
+				}
+				var updateFunc = function() {
+					var nsprefix = select.val();
+					var value = input.val();
+					a.attr("href","../index.php?title=Resource:"+nsprefix+":"+value+"&action=edit");
+					a.text("Create wiki page Resource:"+nsprefix+":"+value);
+				};
+				$("#create input").keyup(updateFunc);
+				$("#create select").change(updateFunc);
+				updateFunc();
+			});
+		');
 
-		if (strlen($url2) === strrpos($url2, ":") + 1) {
-			$this->fillAsOntology($text);
-		} else {
-			$this->fillAsResource($text);
+		$text = "__NOTOC__ __NOEDITSECTION__\n";
+
+		$wgOut->addinlineScript('
+			$( document ).ready(function() {
+				$(".ontoview").first().before( "<div  class=\'catlinks\'><label for=\'view\'>View definition in graph:</label><select id=\'view\'/></div>\n");
+				$(".ontoview").each(function(index){
+					$("#view").append("<option value=\'"+$( this ).attr("id")+"\'>"+$( this ).attr("id")+"</option>");
+				});
+				chooseOnto = function() {
+					$(".ontoview").each(function(index){
+						if($(this).attr("id")==$("#view").val()) {
+							$(this).show();
+						} else {
+							$(this).hide();
+						}
+					});
+				}
+				$("#view").change(chooseOnto);
+				chooseOnto();
+			});
+		');
+		foreach ($this->getDocument()->getGraphNames() as $guri) {
+			if (strpos($guri, "_:") === 0) {
+				continue;
+			}
+			$onto = Resource::get($guri)->getPName();
+			$gwuri = Resource::get($guri)->getTitle()->getFullUrl();
+
+			$uri = $this->about->getUri();
+			$pname = $this->about->getPName();
+			$wuri = $title->getFullUrl();
+			$urlwiki = substr($wuri, 0, strrpos($wuri, ":") + 1);
+			$gurlwiki = substr($gwuri, 0, strrpos($gwuri, ":") + 1);
+
+			$localName = substr($wuri, strrpos($wuri, ":") + 1);
+			$sep = ((strpos($wuri, "?title=") !== false)) ? "&" : "?";
+			$gurlrdf = $gurlwiki . $sep . 'accept=application/rdf%2bxml';
+			$gurlttl = $gurlwiki . $sep . 'accept=text/turtle#';
+			$gurln3 = $gurlwiki . $sep . 'accept=application/n-triples#';
+
+			$text .= "<div class='ontoview' id='$onto'>\n";
+			$text .= "===Description of $pname in graph $onto===\n\n";
+			$text .= "* Resource IRI: $uri\n";
+			$text .= "* Graph IRI: $guri\n";
+			$text .= "* Graph [[Resource:$onto|wiki page]]\n";
+			$text .= "* Graph Sources: ([$gurlrdf application/rdf+xml], [$gurlttl application/turtle], [$gurln3 application/n-triples])\n";
+			if (strlen($wuri) === strrpos($wuri, ":") + 1) {
+				$this->fillAsOntology($guri, $onto, $text);
+			} else {
+				$this->fillAsResource($guri, $onto, $text);
+			}
+			$text .= "</div>";
 		}
 
 		$output = $wgParser->parse($text, $title, $options, true, true, $revId);
+	}
 
-		// $output->addOutputHook(function ($output) {$output->addHTML("<h3>Source</h3><summary><details>Wikipage content as Json-LD<details><pre>" . $this->getNativeData() . "</pre></summary");});
+	protected function fillAsOntology($guri, $onto, &$text) {
+		$uri = $this->about->getUri();
+
+		$text .= "[[Category:Ontology]]\n\n";
+		$text .= "===List of resources===\n\n";
+		$text .= "* [[:Category:Resources in $onto|Resources]]\n";
+		$text .= "* [[:Category:Classes in $onto|Classes]]\n";
+		$text .= "* [[:Category:Properties in $onto|Properties]]\n";
+		$text .= "* [[:Category:OWL Classes in $onto|OWL Classes]]\n";
+		$text .= "* [[:Category:OWL Object Properties in $onto|OWL Object Properties]]\n";
+		$text .= "* [[:Category:OWL Data Properties in $onto|OWL Data Properties]]\n";
+
+		$this->fillValues($guri, $onto, $text, "Title", "http://purl.org/dc/terms/title");
+		$this->fillValues($guri, $onto, $text, "Abstract", "http://purl.org/dc/terms/description");
+		$this->fillValues($guri, $onto, $text, "Version Info", "http://www.w3.org/2002/07/owl#versionInfo");
+		$this->fillValues($guri, $onto, $text, "Comment", "http://www.w3.org/2000/01/rdf-schema#comment");
+		$this->fillResources($guri, $onto, $text, "License", "http://creativecommons.org/ns#license");
+		$this->fillResourcesType($guri, $onto, $text, "Ontology Classes", "http://www.w3.org/2002/07/owl#Class");
+		$this->fillResourcesType($guri, $onto, $text, "Ontology Object Properties", "http://www.w3.org/2002/07/owl#ObjectProperty");
+		$this->fillResourcesType($guri, $onto, $text, "Ontology Data Properties", "http://www.w3.org/2002/07/owl#DataProperty");
+		$this->fillResourcesType($guri, $onto, $text, "Other Classes", "http://www.w3.org/2000/01/rdf-schema#Class");
+		$this->fillResourcesType($guri, $onto, $text, "Other Properties", "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
 
 	}
 
-	protected function fillAsOntology(&$text) {
-		$guri = $this->about->getUri();
-		$this->fillValues($text, "Title", "http://purl.org/dc/terms/title");
-		$this->fillValues($text, "Abstract", "http://purl.org/dc/terms/description");
-		$this->fillValues($text, "Version Info", "http://www.w3.org/2002/07/owl#versionInfo");
-		$this->fillValues($text, "Comment", "http://www.w3.org/2000/01/rdf-schema#comment");
-		$this->fillResources($text, "License", "http://creativecommons.org/ns#license");
-		$this->fillResourcesType($text, "Ontology Classes", "http://www.w3.org/2002/07/owl#Class");
-		$this->fillResourcesType($text, "Ontology Object Properties", "http://www.w3.org/2002/07/owl#ObjectProperty");
-		$this->fillResourcesType($text, "Ontology Data Properties", "http://www.w3.org/2002/07/owl#DataProperty");
-		$this->fillResourcesType($text, "Other Classes", "http://www.w3.org/2000/01/rdf-schema#Class");
-		$this->fillResourcesType($text, "Other Properties", "http://www.w3.org/1999/02/22-rdf-syntax-ns#Property");
-
-	}
-
-	protected function fillResourcesType(&$text, $type, $turi) {
-		$guri = $this->about->getUri();
+	protected function fillResourcesType($guri, $onto, &$text, $type, $turi) {
 		$q = "SELECT DISTINCT ?x FROM <$guri> WHERE {
 			?x a <$turi> .
 		} ORDER BY ?x";
@@ -201,11 +285,9 @@ class JsonldContent extends \JsonContent {
 
 	}
 
-	protected function fillResources(&$text, $title, $puri) {
+	protected function fillResources($guri, $onto, &$text, $title, $puri) {
 		$uri = $this->about->getUri();
 		$pname = $this->about->getPName();
-		$guri = Resource::get(substr($pname, 0, strpos($pname, ":") + 1))->getUri();
-
 		$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
 			<$uri> <$puri> ?o .
 		} ORDER BY ?o";
@@ -215,15 +297,31 @@ class JsonldContent extends \JsonContent {
 			$text .= "===$title===\n\n";
 		}
 		foreach ($rs['result']['rows'] as $row) {
-			$this->printResource($text, Resource::get($row['o']));
+			$res = Resource::get($row['o']);
+			if ($puri == "http://www.w3.org/1999/02/22-rdf-syntax-ns#type") {
+				if ($res->getPName() == "rdfs:Class") {
+					$text .= "[[Category:Classes in $onto]]\n\n";
+				}
+				if ($res->getPName() == "rdf:Property") {
+					$text .= "[[Category:Properties in $onto]]\n\n";
+				}
+				if ($res->getPName() == "rdfs:Class") {
+					$text .= "[[Category:OWL Classes in $onto]]\n\n";
+				}
+				if ($res->getPName() == "owl:ObjectProperty") {
+					$text .= "[[Category:OWL Object Properties in $onto]]\n\n";
+				}
+				if ($res->getPName() == "owl:DatatypeProperty") {
+					$text .= "[[Category:OWL Data Properties in $onto]]\n\n";
+				}
+			}
+			$this->printResource($guri, $onto, $text, $res);
 		}
 	}
 
-	protected function fillResourcesReverse(&$text, $title, $puri) {
+	protected function fillResourcesReverse($guri, $onto, &$text, $title, $puri) {
 		$uri = $this->about->getUri();
 		$pname = $this->about->getPName();
-		$guri = Resource::get(substr($pname, 0, strpos($pname, ":") + 1))->getUri();
-
 		$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
 			?o <$puri> <$uri> .
 		} ORDER BY ?o";
@@ -233,11 +331,11 @@ class JsonldContent extends \JsonContent {
 			$text .= "===$title===\n\n";
 		}
 		foreach ($rs['result']['rows'] as $row) {
-			$this->printResource($text, Resource::get($row['o']));
+			$this->printResource($guri, $onto, $text, Resource::get($row['o']));
 		}
 	}
 
-	protected function printResource(&$text, $r) {
+	protected function printResource($guri, $onto, &$text, $r) {
 		if ($r->isBNode()) {
 			return;
 		}
@@ -258,33 +356,36 @@ class JsonldContent extends \JsonContent {
 		$text .= "* <span id='$rfragment'>[$ruri $rpname] $rcomment </span>\n";
 	}
 
-	protected function fillAsResource(&$text) {
-		$this->fillValues($text, "Human-readable names", "http://www.w3.org/2000/01/rdf-schema#label");
-		$this->fillResources($text, "Types", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
-		$this->fillValues($text, "Human-readable descriptions", "http://www.w3.org/2000/01/rdf-schema#comment");
-		$this->fillValues($text, "Term status", "http://www.w3.org/2003/06/sw-vocab-status/ns#term_status");
-		$this->fillValues($text, "Additional informations", "http://www.w3.org/2003/06/sw-vocab-status/ns#moreinfos");
+	protected function fillAsResource($guri, $onto, &$text) {
+		$text .= "[[Category:Resources]]\n";
+		$text .= "[[Category:Resources in $onto]]\n";
 
-		$this->fillResources($text, "Direct super classes", "http://www.w3.org/2000/01/rdf-schema#subClassOf");
-		$this->fillResources($text, "Equivalent classes", "http://www.w3.org/2002/07/owl#equivalentClass");
-		$this->fillResources($text, "Disjoint classes", "http://www.w3.org/2002/07/owl#disjointWith");
-		$this->fillResourcesReverse($text, "Domain Of", "http://www.w3.org/2000/01/rdf-schema#domain");
-		$this->fillResourcesReverse($text, "Range Of", "http://www.w3.org/2000/01/rdf-schema#range");
+		$this->fillValues($guri, $onto, $text, "Human-readable names", "http://www.w3.org/2000/01/rdf-schema#label");
+		$this->fillResources($guri, $onto, $text, "Types", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type");
+		$this->fillValues($guri, $onto, $text, "Human-readable descriptions", "http://www.w3.org/2000/01/rdf-schema#comment");
+		$this->fillValues($guri, $onto, $text, "Term status", "http://www.w3.org/2003/06/sw-vocab-status/ns#term_status");
+		$this->fillValues($guri, $onto, $text, "Additional informations", "http://www.w3.org/2003/06/sw-vocab-status/ns#moreinfos");
 
-		$this->fillResources($text, "Direct super properties", "http://www.w3.org/2000/01/rdf-schema#subPropertyOf");
-		$this->fillResources($text, "Known domains", "http://www.w3.org/2000/01/rdf-schema#domain");
-		$this->fillResources($text, "Known ranges", "http://www.w3.org/2000/01/rdf-schema#range");
-		$this->fillResources($text, "Known equivalent properties", "http://www.w3.org/2002/07/owl#equivalentProperty");
-		$this->fillResources($text, "Known disjoint properties", "http://www.w3.org/2002/07/owl#propertyDisjointWith");
-		$this->fillResources($text, "Known inverse properties", "http://www.w3.org/2002/07/owl#inverseOf");
+		$this->fillResources($guri, $onto, $text, "Direct super classes", "http://www.w3.org/2000/01/rdf-schema#subClassOf");
+		$this->fillResourcesReverse($guri, $onto, $text, "Direct sub classes", "http://www.w3.org/2000/01/rdf-schema#subClassOf");
+		$this->fillResources($guri, $onto, $text, "Equivalent classes", "http://www.w3.org/2002/07/owl#equivalentClass");
+		$this->fillResources($guri, $onto, $text, "Disjoint classes", "http://www.w3.org/2002/07/owl#disjointWith");
+		$this->fillResourcesReverse($guri, $onto, $text, "Domain Of", "http://www.w3.org/2000/01/rdf-schema#domain");
+		$this->fillResourcesReverse($guri, $onto, $text, "Range Of", "http://www.w3.org/2000/01/rdf-schema#range");
+
+		$this->fillResources($guri, $onto, $text, "Direct super properties", "http://www.w3.org/2000/01/rdf-schema#subPropertyOf");
+		$this->fillResourcesReverse($guri, $onto, $text, "Direct sub properties", "http://www.w3.org/2000/01/rdf-schema#subPropertyOf");
+		$this->fillResources($guri, $onto, $text, "Known domains", "http://www.w3.org/2000/01/rdf-schema#domain");
+		$this->fillResources($guri, $onto, $text, "Known ranges", "http://www.w3.org/2000/01/rdf-schema#range");
+		$this->fillResources($guri, $onto, $text, "Known equivalent properties", "http://www.w3.org/2002/07/owl#equivalentProperty");
+		$this->fillResources($guri, $onto, $text, "Known disjoint properties", "http://www.w3.org/2002/07/owl#propertyDisjointWith");
+		$this->fillResources($guri, $onto, $text, "Known inverse properties", "http://www.w3.org/2002/07/owl#inverseOf");
 
 	}
 
-	protected function fillValues(&$text, $title, $puri) {
+	protected function fillValues($guri, $onto, &$text, $title, $puri) {
 		$uri = $this->about->getUri();
 		$pname = $this->about->getPName();
-		$guri = Resource::get(substr($pname, 0, strpos($pname, ":") + 1))->getUri();
-
 		$q = "SELECT DISTINCT ?o FROM <$guri> WHERE {
 			<$uri> <$puri> ?o .
 		} ORDER BY ?o";

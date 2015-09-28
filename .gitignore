@@ -3,6 +3,7 @@
 
 vendor
 web/vendor
+maintenance/graph
 composer.lock
 composer.phar
 

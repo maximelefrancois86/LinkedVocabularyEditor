@@ -95,14 +95,8 @@ $wgContentHandlers[CONTENT_MODEL_JSONLD] = 'Lve\JsonldContentHandler';
  *  Special pages         *
  **************************/
 //$wgSpecialPages['OkOk'] = 'VEAdminClass'; # Okok is the real name of the Special page
-$wgAutoloadClasses['Lve\AdminPage'] = $wgLveIncludes . 'SpecialLveAdminPage.php'; # Location of the SpecialVEAdminClass class (Tell MediaWiki to load this file)
-$wgSpecialPages['AdminPage'] = 'Lve\AdminPage'; # Tell MediaWiki about the new special page and its class name
-$wgAutoloadClasses['Lve\NamespacesPage'] = $wgLveIncludes . 'SpecialLveNamespacesPage.php';
-$wgSpecialPages['EditNamespaces'] = 'Lve\NamespacesPage';
-$wgAutoloadClasses['Lve\ImportPage'] = $wgLveIncludes . 'SpecialLveImportPage.php';
-$wgSpecialPages['ImportVocabularies'] = 'Lve\ImportPage';
-$wgAutoloadClasses['Lve\GetJsonLDContextPage'] = $wgLveIncludes . 'SpecialLveGetJsonLDContext.php';
-$wgSpecialPages['GetJsonLDContext'] = 'Lve\GetJsonLDContextPage';
+$wgAutoloadClasses['Lve\NamespacesPage'] = $wgLveIncludes . 'SpecialLveNamespacesPage.php'; # Location of the SpecialVEAdminClass class (Tell MediaWiki to load this file)
+$wgSpecialPages['EditNamespaces'] = 'Lve\NamespacesPage'; # Tell MediaWiki about the new special page and its class name
 
 /**************************
  *  Autoload classes      *

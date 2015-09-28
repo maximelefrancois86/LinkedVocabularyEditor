@@ -174,6 +174,8 @@ class EditResource extends \EditPage {
 
 	public static function onPageContentSaveComplete($article, $user, $content, $summary, $isMinor, $isWatch, $section, $flags, $revision, $status, $baseRevId) {
 		$title = $article->getTitle();
+		$uri = Resource::getByTitle($title)->getUri();
+
 		if ($title->getNamespace() != NS_RESOURCE) {
 			return true;
 		}
@@ -198,18 +200,54 @@ class EditResource extends \EditPage {
 			}
 		}
 
+		// list of graphs
+		$guris = Arc2Store::getStore()->getSetting("graphs");
+		if ($guris == null) {
+			$guris = array();
+		}
 		$newdoc = $article->getContent()->getDocument();
-		foreach ($newdoc->getGraphNames() as $graph) {
-			if (strrpos($graph, "_:") === 0) {
+		foreach ($newdoc->getGraphNames() as $guri) {
+			if (strrpos($guri, "_:") === 0) {
 				continue;
 			}
-			$newgraph = JsonLD::toString($newdoc->getGraph($graph)->toJsonLd());
+
+			// update graph setting
+			$uris = Arc2Store::getStore()->getSetting($guri);
+			if ($uris == null) {
+				$uris = array();
+			}
+			$flag = false;
+			for ($i = 0; $i < count($uris); $i++) {
+				if ($uris[$i] == $uri) {
+					$flag = true;
+				}
+			}
+			if (!$flag) {
+				array_push($uris, $uri);
+			}
+			Arc2Store::getStore()->setSetting($guri, $uris);
+
+			// update graphs setting
+			$flag = false;
+			foreach ($guris as $g) {
+				if ($g == $guri) {
+					$flag = true;
+				}
+			}
+			if (!$flag) {
+				array_push($guris, $guri);
+			}
+
+			// update graph in store
+			$newgraph = JsonLD::toString($newdoc->getGraph($guri)->toJsonLd());
 			$newEasyGraph = new \EasyRdf\Graph();
 			$newEasyGraph->parse($newgraph, "jsonld");
 			$newN3 = $newEasyGraph->serialise("ntriples");
-			$text .= "\n\n INSERT INTO <$graph> { $newN3 }";
-			$store->query("INSERT INTO <$graph> { $newN3 }");
+			$text .= "\n\n INSERT INTO <$guri> { $newN3 }";
+			$store->query("INSERT INTO <$guri> { $newN3 }");
 		}
+
+		Arc2Store::getStore()->setSetting("graphs", $guris);
 
 		// $content = new \WikitextContent($text);
 

@@ -35,9 +35,15 @@ class Arc2Store {
 		if (null == $namespaces) {
 			$namespaces = array();
 		}
+
+		ksort($namespaces);
+
+		self::getStore()->setSetting("ns", $namespaces);
+
 		foreach ($namespaces as $prefix => $long) {
 			RdfNamespace::set($prefix, $long);
 		}
+		return $namespaces;
 	}
 
 	// this function sets the Easyrdf namespaces according to the ones stored in the database

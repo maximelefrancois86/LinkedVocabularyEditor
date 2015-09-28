@@ -137,6 +137,60 @@ vreModule.directive('vreLangString', function() {
 
 
 
+vreModule.directive('vreLangStringAreas', function() {
+	return {
+		scope: true,
+		controller: ["$scope","$attrs", function($scope, $attrs){
+			$scope.ppname = $attrs.ppname;
+			$scope.isLiteral = function(object) {
+				return object.hasOwnProperty("@value");
+			};
+			$scope.addLiteral = function() {
+				if(! $scope.s.hasOwnProperty(expand($scope.ppname))) {
+					$scope.s[expand($scope.ppname)] = [];
+				}
+				$scope.s[expand($scope.ppname)].push({"@value":""});
+			};
+		}],
+		restrict: 'E',
+    	templateUrl: "extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/langStringAreas.html",
+	};
+});
+
+vreModule.directive('vreLangStringArea', function() {
+	return {
+		restrict: 'E',
+		controller: ["$scope", "ngDialog", function($scope, ngDialog) {
+ 	 		$scope.languages = languages;
+			$scope.isLangString = function() {
+				return $scope.object.hasOwnProperty("@language");
+			};
+			$scope.setLanguage = function() {
+				$scope.object["@language"] = "en";
+			};
+			$scope.getLabel = function(value, label) {
+				return value+' - ' + label;
+			};
+			// $scope.delete = function() {
+			// 	$scope.objects.splice($scope.objects.indexOf($scope.object),1);
+			// };
+ 	 		$scope.delete = function() {
+ 	 			deleteObjectFn(ngDialog, function() {
+					$scope.s[expand($scope.ppname)].splice($scope.s[expand($scope.ppname)].indexOf($scope.object), 1);
+					if($scope.s[expand($scope.ppname)].length === 0) {
+						delete $scope.s[expand($scope.ppname)];
+					}
+ 	 			});
+ 	 		};
+		}],
+		templateUrl: "extensions/LinkedVocabularyEditor/web/linked-resource-editor/templates/simple-mode/langStringArea.html",
+	};
+});
+
+
+
+
+
 
 vreModule.controller('VreVSTermStatus', ['$scope', function($scope) {
 	$scope.hasProperty = function(pname) {
